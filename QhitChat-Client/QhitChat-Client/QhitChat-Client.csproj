@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>QhitChat_Client</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <StartupObject>QhitChat_Client.App</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Certificate\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StreamJsonRpc" Version="2.8.28" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Certificate\server.cer">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Certificate\server.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
