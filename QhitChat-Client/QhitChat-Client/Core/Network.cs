@@ -13,38 +13,36 @@ namespace QhitChat_Client.Core
 {
     public class Network
     {
-        public JsonRpc Remote;
-        public bool Connected = false;
-
+        private JsonRpc remote;
+        private string address;
+        private int port;
         private X509Certificate2 certificate;
-        JsonMessageFormatter messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
+        private JsonMessageFormatter messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
 
         public Network(string address, int port, X509Certificate certificate)
         {
+            this.address = address;
+            this.port = port;
             this.certificate = new X509Certificate2(certificate);
-            Connect(address, port);
         }
 
-        public void Connect(string address, int port)
+        public async Task ConnectAsync(string address, int port)
         {
             try
             {
-                var client = ConnectToServer(address, port);
+                var client = await ConnectToServerAsync(address, port);
                 ConnectRpcServer(client);
             }
-            catch
-            {
-                Connected = false;
-            }
+            catch{ }
         }
 
-        private TcpClient ConnectToServer(string address, int port)
+        private async Task<TcpClient> ConnectToServerAsync(string address, int port)
         {
             TcpClient client = new TcpClient();
             try
             {
                 // Create a TCP/IP client socket.
-                client.Connect(address, port);
+                await client.ConnectAsync(address, port);
             }
             catch(Exception ex)
             {
@@ -83,7 +81,7 @@ namespace QhitChat_Client.Core
                 sslStream.AuthenticateAsClient(
                     certificate.Subject,
                     null,
-                    SslProtocols.Default,
+                    SslProtocols.Tls12,
                     false);
             }
             catch (AuthenticationException e)
@@ -108,13 +106,9 @@ namespace QhitChat_Client.Core
                 using (var stream = WrapSslStreamAsClient(client))
                 {
                     var messageHandler = new LengthHeaderMessageHandler(stream, stream, messageFormatter);
-                    Remote = new JsonRpc(messageHandler);
-                    //string s = await jsonRpc.InvokeAsync<string>("Ping");
-                    //Trace.WriteLine(s);
-                    // jsonRpc.AddLocalRpcTarget(this);
-                    Remote.StartListening();
-                    Connected = true;
-                    await Remote.Completion;
+                    remote = new JsonRpc(messageHandler);
+                    remote.StartListening();
+                    await remote.Completion;
                 }
             }
             catch
@@ -123,12 +117,26 @@ namespace QhitChat_Client.Core
             }
             finally
             {
-                if (Remote != null)
+                if (remote != null)
                 {
-                    (Remote as IDisposable).Dispose();
-                    Remote = null;
+                    (remote as IDisposable).Dispose();
+                    remote = null;
                 }
             }
+        }
+
+        public async Task<T> InvokeAsync<T>(string targetName, params object?[]? arguments)
+        {
+            if (remote!=null)
+            {
+                return await remote.InvokeAsync<T>(targetName, arguments);
+            }
+            else
+            {
+                await ConnectAsync(address, port);
+                return await remote.InvokeAsync<T>(targetName, arguments);
+            }
+            return default(T);
         }
     }
 }

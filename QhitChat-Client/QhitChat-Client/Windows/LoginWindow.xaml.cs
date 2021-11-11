@@ -21,7 +21,7 @@ namespace QhitChat_Client.Windows
     {
         public LoginWindow()
         {
-
+            _ = Core.Configuration.Instance;    // Initialize global Configuration instance.
             InitializeComponent();
         }
 
@@ -31,6 +31,11 @@ namespace QhitChat_Client.Windows
             if (await API.Utils.PingAsync()=="Pong")
             {
                 NotificationLabel.Content = "Connected.";
+            }
+            else
+            {
+                MessageBox.Show("无法连接服务器！软件即将退出", "严重错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(0);
             }
         }
 

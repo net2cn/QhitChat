@@ -9,14 +9,7 @@ namespace QhitChat_Client.API
     {
         public async static Task<string> PingAsync()
         {
-            if (Core.Configuration.Network.Connected == true)
-            {
-                return await Core.Configuration.Network.Remote.InvokeAsync<string>("Ping");
-            }
-            else
-            {
-                return null;
-            }
+            return await Core.Configuration.Network.InvokeAsync<string>("Ping");
         }
     }
 }
