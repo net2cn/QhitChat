@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QhitChat_Client.Windows"
         mc:Ignorable="d"
-        Title="QhitChat" Height="600" Width="800" ResizeMode="NoResize"
+        Title="QhitChat" Height="600" Width="800" ResizeMode="CanResize"
         Background="#FF2C2C2C" WindowStartupLocation="CenterScreen"
-        WindowStyle="None" Loaded="Window_Loaded">
+        WindowStyle="None" Loaded="Window_Loaded" MinWidth="800" MinHeight="600" SourceInitialized="Window_SourceInitialized" AllowsTransparency="True">
     <Window.Resources>
         <Style x:Key="Flat">
+            <Setter Property="Control.MaxWidth" Value="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"/>
+            <Setter Property="Control.MaxHeight" Value="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}"/>
             <Setter Property="Control.Background" Value="{x:Null}" />
             <Setter Property="Control.BorderBrush" Value="{x:Null}" />
             <Style.Triggers>
@@ -26,7 +28,7 @@
     </Window.Resources>
     <Grid>
         <local:TitleGrid x:Name="TitleGrid" Height="50" VerticalAlignment="Top" Background="#FF151515">
-            <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,7,105,3" Foreground="#FFC7C7C7"
+            <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,7,155,3" Foreground="#FFC7C7C7"
                 FontSize="18" FontWeight="Bold" />
             <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
                 d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="50"
@@ -39,16 +41,75 @@
                 </Grid>
 
             </Button>
-            <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,50,0" Background="#FF151515"
-                Click="MinimizeButton_Click" d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right"
-                Width="50" Style="{DynamicResource Flat}">
+            <Button x:Name="MaximizeButton" BorderThickness="0" Margin="0,0,50,0" Background="#FF151515" Style="{DynamicResource Flat}" Height="50" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Click="MaximizeButton_Click">
                 <Grid Height="50" Width="50">
-                    <Path Data="M10,40 L40,40" Margin="3.835,0,3.498,4.167" Stretch="Fill" Stroke="#FFBDBDBD"
-                        StrokeThickness="6" Height="6" VerticalAlignment="Bottom" />
+                    <Path Data="M10,40 L40,40" Margin="4,41,4,5" Stretch="Fill" Stroke="#FFBDBDBD"
+                        StrokeThickness="4" />
+                    <Path Data="M10,40 L40,40" Margin="-14,24,22,22" Stretch="Fill" Stroke="#FFBDBDBD"
+                        StrokeThickness="4" RenderTransformOrigin="0.5,0.5" >
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="-90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                    <Path Data="M10,40 L40,40" Margin="4,7,4,39" Stretch="Fill" Stroke="#FFBDBDBD"
+                        StrokeThickness="4" RenderTransformOrigin="0.5,0.5" >
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="0"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                    <Path Data="M10,40 L40,40" Margin="22,24,-14,22" Stretch="Fill" Stroke="#FFBDBDBD"
+                        StrokeThickness="4" RenderTransformOrigin="0.5,0.5" >
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                </Grid>
+
+            </Button>
+            <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,100,0" Background="#FF151515"
+                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" HorizontalAlignment="Right" Width="50">
+                <Grid Height="50" Width="50">
+                    <Path Data="M10,40 L40,40" Margin="4,41,4,5" Stretch="Fill" Stroke="#FFBDBDBD"
+                        StrokeThickness="4" />
                 </Grid>
 
             </Button>
         </local:TitleGrid>
-
+        <Grid Margin="0,50,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="299*" MinWidth="299" MaxWidth="398"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="499*"/>
+            </Grid.ColumnDefinitions>
+            <ListView  ScrollViewer.VerticalScrollBarVisibility="Visible" Background="#FF2C2C2C" BorderBrush="#FF2C2C2C" BorderThickness="1,1,1,1">
+                <ListView.Resources>
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter Width="2" HorizontalAlignment="Stretch" Grid.Column="1"/>
+            <Image Grid.Column="2" Margin="0,0,0,0"/>
+        </Grid>
     </Grid>
 </Window>

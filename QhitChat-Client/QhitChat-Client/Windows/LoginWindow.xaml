@@ -70,8 +70,8 @@
                     Click="MinimizeButton_Click" d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right"
                     Width="50" Style="{DynamicResource Flat}">
                 <Grid Height="50" Width="50">
-                    <Path Data="M10,40 L40,40" Margin="3.835,0,3.498,4.167" Stretch="Fill" Stroke="#FFBDBDBD"
-                          StrokeThickness="6" Height="6" VerticalAlignment="Bottom" />
+                    <Path Data="M10,40 L40,40" Margin="4,41,4,5" Stretch="Fill" Stroke="#FFBDBDBD"
+                        StrokeThickness="4" />
                 </Grid>
 
             </Button>
