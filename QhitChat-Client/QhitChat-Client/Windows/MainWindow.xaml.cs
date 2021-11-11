@@ -75,5 +75,10 @@ namespace QhitChat_Client.Windows
 
             return (IntPtr)0;
         }
+
+        private void MenuToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

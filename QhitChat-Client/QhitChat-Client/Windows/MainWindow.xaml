@@ -1,26 +1,27 @@
-﻿<Window x:Class="QhitChat_Client.Windows.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QhitChat_Client.Windows"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="QhitChat_Client.Windows.MainWindow"
         mc:Ignorable="d"
         Title="QhitChat" Height="600" Width="800" ResizeMode="CanResize"
         Background="#FF2C2C2C" WindowStartupLocation="CenterScreen"
         WindowStyle="None" Loaded="Window_Loaded" MinWidth="800" MinHeight="600" SourceInitialized="Window_SourceInitialized" AllowsTransparency="True">
     <Window.Resources>
         <Style x:Key="Flat">
-            <Setter Property="Control.MaxWidth" Value="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"/>
-            <Setter Property="Control.MaxHeight" Value="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}"/>
+            <Setter Property="FrameworkElement.MaxWidth" Value="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"/>
+            <Setter Property="FrameworkElement.MaxHeight" Value="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}"/>
             <Setter Property="Control.Background" Value="{x:Null}" />
             <Setter Property="Control.BorderBrush" Value="{x:Null}" />
             <Style.Triggers>
-                <Trigger Property="Control.IsMouseOver" Value="True">
+                <Trigger Property="UIElement.IsMouseOver" Value="True">
                     <Setter Property="Control.Background" Value="{x:Null}" />
                     <Setter Property="Control.BorderBrush" Value="{x:Null}" />
                     <Setter Property="Control.FontWeight" Value="Bold" />
                 </Trigger>
-                <Trigger Property="Control.IsFocused" Value="True">
+                <Trigger Property="UIElement.IsFocused" Value="True">
                     <Setter Property="Control.FontWeight" Value="Bold" />
                 </Trigger>
             </Style.Triggers>
@@ -90,26 +91,146 @@
 
             </Button>
         </local:TitleGrid>
-        <Grid Margin="0,50,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="299*" MinWidth="299" MaxWidth="398"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="499*"/>
-            </Grid.ColumnDefinitions>
-            <ListView  ScrollViewer.VerticalScrollBarVisibility="Visible" Background="#FF2C2C2C" BorderBrush="#FF2C2C2C" BorderThickness="1,1,1,1">
-                <ListView.Resources>
-                    <Style TargetType="{x:Type GridViewColumnHeader}">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </Style>
-                </ListView.Resources>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-            <GridSplitter Width="2" HorizontalAlignment="Stretch" Grid.Column="1"/>
-            <Image Grid.Column="2" Margin="0,0,0,0"/>
-        </Grid>
+        <materialDesign:DialogHost
+            Identifier="RootDialog"
+            DialogTheme="Inherit"
+            SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}"
+            Margin="0,50,0,0">
+            <materialDesign:DrawerHost
+                IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                <materialDesign:DrawerHost.LeftDrawerContent>
+                    <DockPanel MinWidth="220">
+                        <ToggleButton 
+                        Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                        DockPanel.Dock="Top"
+                        HorizontalAlignment="Right" 
+                        Margin="16"
+                        IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"/>
+
+                        <TextBox 
+                        x:Name="DemoItemsSearchBox"
+                        Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                        DockPanel.Dock="Top"
+                        Margin="16, 4"
+                        Width="200"
+                        materialDesign:HintAssist.Hint="Search"
+                        materialDesign:HintAssist.IsFloating="True"
+                        materialDesign:TextFieldAssist.HasClearButton="True"
+                        materialDesign:TextFieldAssist.HasOutlinedTextField="True"
+                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                        materialDesign:TextFieldAssist.TextFieldCornerRadius="4"/>
+
+                        <ListBox 
+                        x:Name="DemoItemsListBox" 
+                        Margin="0 16 0 16"
+                        SelectedIndex="{Binding SelectedIndex}"
+                        SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                        ItemsSource="{Binding DemoItems}"
+                        AutomationProperties.Name="DemoPagesListBox"
+                        Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
+                            <ListBox.Resources>
+                                <Style TargetType="ScrollBar" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}"/>
+                            </ListBox.Resources>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="domain:DemoItem">
+                                    <TextBlock Text="{Binding Name}" Margin="24 4 0 4" AutomationProperties.AutomationId="DemoItemPage"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+                </materialDesign:DrawerHost.LeftDrawerContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="299*" MinWidth="299" MaxWidth="398"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="499*"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel>
+                        <materialDesign:ColorZone
+                    Padding="16"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                    DockPanel.Dock="Top" Mode="PrimaryMid">
+                            <DockPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <ToggleButton
+                                x:Name="MenuToggleButton"
+                                Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                                IsChecked="False"
+                                AutomationProperties.Name="HamburgerToggleButton" Click="MenuToggleButton_Click"/>
+                                </StackPanel>
+                                <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="22"
+                            Margin="10,0,0,0"
+                            Text="QhitChat"/>
+                                <materialDesign:PopupBox StaysOpen="False" PlacementMode="BottomAndAlignRightEdges" HorizontalAlignment="Right"  Margin="0,0,0,0">
+                                    <StackPanel>
+                                        <Grid Margin="10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock
+                                        Text="Light"
+                                        Margin="0 0 10 0"/>
+                                            <ToggleButton
+                                        x:Name="DarkModeToggleButton"
+                                        Grid.Column="1"/>
+                                            <TextBlock
+                                        Text="Dark"
+                                        Margin="10 0 0 0"
+                                        Grid.Column="2"/>
+                                        </Grid>
+
+                                        <Separator/>
+
+                                        <Button
+                                    Content="Hello World"/>
+
+                                        <Separator/>
+
+                                        <Button
+                                    Content="Exit"/>
+                                    </StackPanel>
+                                </materialDesign:PopupBox>
+
+                            </DockPanel>
+                        </materialDesign:ColorZone>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <ScrollViewer
+                        x:Name="MainScrollViewer"
+                        Grid.Row="1"
+                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
+                        HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}"
+                        VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}" >
+                                <ContentControl
+                            DataContext="{Binding SelectedItem}"
+                            Margin="{Binding MarginRequirement, FallbackValue=16}"
+                            Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"/>
+                            </ScrollViewer>
+
+                            <materialDesign:Snackbar
+                        x:Name="MainSnackbar"
+                        MessageQueue="{materialDesign:MessageQueue}"
+                        Grid.Row="1"/>
+                        </Grid>
+                    </DockPanel>
+                    <GridSplitter Width="2" HorizontalAlignment="Stretch" Grid.Column="1"/>
+                    <Image Grid.Column="2" Margin="0,0,0,0"/>
+                </Grid>
+            </materialDesign:DrawerHost>
+        </materialDesign:DialogHost>
     </Grid>
 </Window>

@@ -127,15 +127,23 @@ namespace QhitChat_Client.Core
 
         public async Task<T> InvokeAsync<T>(string targetName, params object?[]? arguments)
         {
-            if (remote!=null)
+            try
             {
-                return await remote.InvokeAsync<T>(targetName, arguments);
+                if (remote != null)
+                {
+                    return await remote.InvokeAsync<T>(targetName, arguments);
+                }
+                else
+                {
+                    await ConnectAsync(address, port);
+                    if (remote == null)
+                    {
+                        throw new SocketException();
+                    }
+                    return await remote.InvokeAsync<T>(targetName, arguments);
+                }
             }
-            else
-            {
-                await ConnectAsync(address, port);
-                return await remote.InvokeAsync<T>(targetName, arguments);
-            }
+            catch { }
             return default(T);
         }
     }
