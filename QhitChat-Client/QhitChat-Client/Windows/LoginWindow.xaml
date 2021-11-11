@@ -56,24 +56,21 @@
             <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,7,105,3" Foreground="#FFC7C7C7"
                    FontSize="18" FontWeight="Bold" />
             <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
-                    d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="50"
-                    Style="{DynamicResource Flat}">
-                <Grid Height="50" Width="50">
-                    <Path Data="M10,40 L40,10" Margin="3.835,4.071,3.753,4.333" Stretch="Fill" Stroke="#FFBDBDBD"
-                          StrokeThickness="4" />
-                    <Path Data="M40,80 L10,40" Margin="3.835,4.071,3.753,4.333" Stretch="Fill" Stroke="#FFBDBDBD"
-                          StrokeThickness="4" />
-                </Grid>
-
+                d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="50"
+                Style="{DynamicResource Flat}">
+                <Viewbox Width="48" Height="48">
+                    <Canvas Width="24" Height="24">
+                        <Path Fill="#FFC7C7C7" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
+                    </Canvas>
+                </Viewbox>
             </Button>
             <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,50,0" Background="#FF151515"
-                    Click="MinimizeButton_Click" d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right"
-                    Width="50" Style="{DynamicResource Flat}">
-                <Grid Height="50" Width="50">
-                    <Path Data="M10,40 L40,40" Margin="4,41,4,5" Stretch="Fill" Stroke="#FFBDBDBD"
-                        StrokeThickness="4" />
-                </Grid>
-
+                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" HorizontalAlignment="Right" Width="50">
+                <Viewbox Width="48" Height="48">
+                    <Canvas Width="24" Height="24">
+                        <Path Fill="#FFC7C7C7" Data="M20,14H4V10H20" />
+                    </Canvas>
+                </Viewbox>
             </Button>
         </local:TitleGrid>
     </Grid>
