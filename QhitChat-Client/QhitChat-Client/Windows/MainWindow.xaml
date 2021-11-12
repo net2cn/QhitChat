@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="QhitChat" Height="800" Width="1200" ResizeMode="CanResizeWithGrip"
         Background="#FF2C2C2C" WindowStartupLocation="CenterScreen"
-        WindowStyle="None" Loaded="Window_Loaded" MinWidth="800" MinHeight="600" SourceInitialized="Window_SourceInitialized" AllowsTransparency="True">
+        WindowStyle="None" Loaded="Window_Loaded" MinWidth="1200" MinHeight="800" SourceInitialized="Window_SourceInitialized" AllowsTransparency="True">
     <Window.Resources>
         <Style x:Key="Flat">
             <Setter Property="FrameworkElement.MaxWidth" Value="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"/>
@@ -64,7 +64,7 @@
             <materialDesign:DrawerHost
                 IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
                 <materialDesign:DrawerHost.LeftDrawerContent>
-                    <DockPanel MinWidth="220">
+                    <DockPanel MinWidth="400">
                         <ToggleButton 
                         Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                         DockPanel.Dock="Top"
@@ -76,7 +76,7 @@
                         Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
                         DockPanel.Dock="Top"
                         Margin="16, 4"
-                        Width="200"
+                        Width="325"
                         materialDesign:HintAssist.Hint="Search"
                         materialDesign:HintAssist.IsFloating="True"
                         materialDesign:TextFieldAssist.HasClearButton="True"
@@ -183,7 +183,30 @@
                         </Grid>
                     </DockPanel>
                     <GridSplitter Width="2" HorizontalAlignment="Stretch" Grid.Column="1"/>
-                    <Image Grid.Column="2" Margin="0,0,0,0"/>
+                    <Grid Grid.Column="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <ScrollViewer
+                        x:Name="ChatScrollViewer"
+                        Grid.Row="1"
+                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
+                        HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}"
+                        VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}" >
+                                <ContentControl
+                            DataContext="{Binding SelectedItem}"
+                            Margin="{Binding MarginRequirement, FallbackValue=16}"
+                            Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"/>
+                            </ScrollViewer>
+                            <materialDesign:Snackbar
+                        x:Name="ChatSnackbar"
+                        MessageQueue="{materialDesign:MessageQueue}"
+                        Grid.Row="1"/>
+                        </Grid>
+                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#DDFFFFFF" FontSize="50">从左侧选择对象开始聊天</Label>
+                    </Grid>
                 </Grid>
             </materialDesign:DrawerHost>
         </materialDesign:DialogHost>
