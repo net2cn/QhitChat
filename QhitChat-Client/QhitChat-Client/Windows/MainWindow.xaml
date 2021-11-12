@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:QhitChat_Client.Windows"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="QhitChat_Client.Windows.MainWindow"
         mc:Ignorable="d"
-        Title="QhitChat" Height="600" Width="800" ResizeMode="CanResize"
+        Title="QhitChat" Height="800" Width="1200" ResizeMode="CanResizeWithGrip"
         Background="#FF2C2C2C" WindowStartupLocation="CenterScreen"
         WindowStyle="None" Loaded="Window_Loaded" MinWidth="800" MinHeight="600" SourceInitialized="Window_SourceInitialized" AllowsTransparency="True">
     <Window.Resources>
@@ -28,28 +28,28 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <local:TitleGrid x:Name="TitleGrid" Height="50" VerticalAlignment="Top" Background="#FF151515">
-            <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,7,155,3" Foreground="#FFC7C7C7"
-                FontSize="18" FontWeight="Bold" />
+        <local:TitleGrid x:Name="TitleGrid" Height="30" VerticalAlignment="Top" Background="#FF151515">
+            <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,0,155,0" Foreground="#FFC7C7C7"
+                FontSize="17" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
             <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
-                d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="50"
+                d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="30"
                 Style="{DynamicResource Flat}">
-                <Viewbox Width="48" Height="48">
+                <Viewbox>
                     <Canvas Width="24" Height="24">
                         <Path Fill="#FFC7C7C7" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
                     </Canvas>
                 </Viewbox>
             </Button>
-            <Button x:Name="MaximizeButton" BorderThickness="0" Margin="0,0,50,0" Background="#FF151515" Style="{DynamicResource Flat}" Height="50" VerticalAlignment="Center" HorizontalAlignment="Right" Width="50" Click="MaximizeButton_Click">
-                <Viewbox Width="48" Height="48">
+            <Button x:Name="MaximizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515" Style="{DynamicResource Flat}" Click="MaximizeButton_Click" HorizontalAlignment="Right" Width="30">
+                <Viewbox>
                     <Canvas Width="24" Height="24">
                         <Path Fill="#FFC7C7C7" Data="M4,4H20V20H4V4M6,8V18H18V8H6Z" />
                     </Canvas>
                 </Viewbox>
             </Button>
-            <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,100,0" Background="#FF151515"
-                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" HorizontalAlignment="Right" Width="50">
-                <Viewbox Width="48" Height="48">
+            <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,60,0" Background="#FF151515"
+                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
+                <Viewbox>
                     <Canvas Width="24" Height="24">
                         <Path Fill="#FFC7C7C7" Data="M20,14H4V10H20" />
                     </Canvas>
@@ -60,7 +60,7 @@
             Identifier="RootDialog"
             DialogTheme="Inherit"
             SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}"
-            Margin="0,50,0,0">
+            Margin="0,30,0,0">
             <materialDesign:DrawerHost
                 IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
                 <materialDesign:DrawerHost.LeftDrawerContent>
@@ -71,7 +71,6 @@
                         HorizontalAlignment="Right" 
                         Margin="16"
                         IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"/>
-
                         <TextBox 
                         x:Name="DemoItemsSearchBox"
                         Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
@@ -84,7 +83,6 @@
                         materialDesign:TextFieldAssist.HasOutlinedTextField="True"
                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
                         materialDesign:TextFieldAssist.TextFieldCornerRadius="4"/>
-
                         <ListBox 
                         x:Name="DemoItemsListBox" 
                         Margin="0 16 0 16"
@@ -106,29 +104,29 @@
                 </materialDesign:DrawerHost.LeftDrawerContent>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="299*" MinWidth="299" MaxWidth="398"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="499*"/>
+                        <ColumnDefinition Width="299*" MinWidth="299"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="500*" MinWidth="500"/>
                     </Grid.ColumnDefinitions>
                     <DockPanel>
                         <materialDesign:ColorZone
-                    Padding="16"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
-                    DockPanel.Dock="Top" Mode="PrimaryMid">
+                            Padding="16"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                            DockPanel.Dock="Top" Mode="PrimaryMid">
                             <DockPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <ToggleButton
-                                x:Name="MenuToggleButton"
-                                Style="{StaticResource MaterialDesignHamburgerToggleButton}"
-                                IsChecked="False"
-                                AutomationProperties.Name="HamburgerToggleButton" Click="MenuToggleButton_Click"/>
+                                        x:Name="MenuToggleButton"
+                                        Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                                        IsChecked="False"
+                                        AutomationProperties.Name="HamburgerToggleButton" Click="MenuToggleButton_Click"/>
                                 </StackPanel>
                                 <TextBlock
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            FontSize="22"
-                            Margin="10,0,0,0"
-                            Text="QhitChat"/>
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    FontSize="22"
+                                    Margin="10,0,0,0"
+                                    Text="QhitChat"/>
                                 <materialDesign:PopupBox StaysOpen="False" PlacementMode="BottomAndAlignRightEdges" HorizontalAlignment="Right"  Margin="0,0,0,0">
                                     <StackPanel>
                                         <Grid Margin="10">
@@ -152,28 +150,21 @@
                                         Margin="10 0 0 0"
                                         Grid.Column="2"/>
                                         </Grid>
-
                                         <Separator/>
-
                                         <Button
                                     Content="Hello World"/>
-
                                         <Separator/>
-
                                         <Button
                                     Content="Exit"/>
                                     </StackPanel>
                                 </materialDesign:PopupBox>
-
                             </DockPanel>
                         </materialDesign:ColorZone>
-
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-
                             <ScrollViewer
                         x:Name="MainScrollViewer"
                         Grid.Row="1"
@@ -185,7 +176,6 @@
                             Margin="{Binding MarginRequirement, FallbackValue=16}"
                             Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"/>
                             </ScrollViewer>
-
                             <materialDesign:Snackbar
                         x:Name="MainSnackbar"
                         MessageQueue="{materialDesign:MessageQueue}"

@@ -52,21 +52,21 @@
             <CheckBox x:Name="isSaveCheckBox" Content="保存密码" VerticalAlignment="Top" Margin="102,33,102,0" Grid.Row="1"
                       HorizontalAlignment="Center" Foreground="#FFC7C7C7" Background="White" BorderThickness="1" BorderBrush="#FF5F5F5F" />
         </Grid>
-        <local:TitleGrid x:Name="TitleGrid" Height="50" VerticalAlignment="Top" Background="#FF151515">
-            <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,7,105,3" Foreground="#FFC7C7C7"
-                   FontSize="18" FontWeight="Bold" />
+        <local:TitleGrid x:Name="TitleGrid" Height="30" VerticalAlignment="Top" Background="#FF151515">
+            <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,0,155,0" Foreground="#FFC7C7C7"
+                FontSize="17" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
             <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
-                d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="50"
+                d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="30"
                 Style="{DynamicResource Flat}">
-                <Viewbox Width="48" Height="48">
+                <Viewbox>
                     <Canvas Width="24" Height="24">
                         <Path Fill="#FFC7C7C7" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
                     </Canvas>
                 </Viewbox>
             </Button>
-            <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,50,0" Background="#FF151515"
-                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" HorizontalAlignment="Right" Width="50">
-                <Viewbox Width="48" Height="48">
+            <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515"
+                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
+                <Viewbox>
                     <Canvas Width="24" Height="24">
                         <Path Fill="#FFC7C7C7" Data="M20,14H4V10H20" />
                     </Canvas>
