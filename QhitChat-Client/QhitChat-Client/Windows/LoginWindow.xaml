@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QhitChat_Client.Windows"
         mc:Ignorable="d"
-        Title="QhitChat" Height="360" Width="600" ResizeMode="NoResize" Loaded="Window_Loaded"
-        Background="#FF2C2C2C" WindowStartupLocation="CenterScreen"
-        WindowStyle="None">
+        Title="QhitChat" Height="380" Width="620" ResizeMode="NoResize" Loaded="Window_Loaded"
+        Background="{x:Null}" WindowStartupLocation="CenterScreen"
+        WindowStyle="None" AllowsTransparency="True">
     <Window.Resources>
         <Style x:Key="Flat">
             <Setter Property="Control.Background" Value="{x:Null}" />
@@ -24,53 +24,60 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Grid>
-        <Label x:Name="NotificationLabel" Content="No Connection." Margin="0,0,0,0.336" Background="#FF2D8CEC"
+    <Border>
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.8" 
+                Color="Gray" />
+        </Border.Effect>
+        <Grid Background="#FF2C2C2C" Margin="10">
+            <local:TitleGrid x:Name="TitleGrid" Height="30" VerticalAlignment="Top" Background="#FF151515">
+                <Viewbox Width="20" Height="20" HorizontalAlignment="Left" Margin="5,5,0,5">
+                    <Canvas Width="24" Height="24">
+                        <Path Fill="#FFC7C7C7" Data="M17,12V3A1,1 0 0,0 16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z" />
+                    </Canvas>
+                </Viewbox>
+                <Label x:Name="TitleLabel" Content="QhitChat" Foreground="#FFC7C7C7" FontSize="17" HorizontalAlignment="Center"/>
+                <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
+                d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="30"
+                Style="{DynamicResource Flat}">
+                    <Viewbox>
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="#FFC7C7C7" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515"
+                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
+                    <Viewbox>
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="#FFC7C7C7" Data="M20,14H4V10H20" />
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+            </local:TitleGrid>
+            <Grid Margin="0,30,0,0">
+                <Label x:Name="NotificationLabel" Content="No Connection." Margin="0,0,0,0.336" Background="#FF2D8CEC"
                Foreground="#FFC7C7C7" Height="24.572" VerticalAlignment="Bottom" />
-        <Button x:Name="LoginButton" Content="登录" Margin="0,0,0,25" Click="LoginButton_Click" FontSize="20"
+                <Button x:Name="LoginButton" Content="登录" Margin="0,0,0,25" Click="LoginButton_Click" FontSize="20"
                 RenderTransformOrigin="1.883,2.357" BorderThickness="0" Background="#FF474747" Foreground="#FFC7C7C7"
                 HorizontalAlignment="Right" Width="102" Height="42" VerticalAlignment="Bottom"
                 Style="{DynamicResource Flat}" />
-        <Grid Margin="0,0,160,70" Background="#FF595959" Height="207.5" VerticalAlignment="Bottom"
+                <Grid Margin="0,0,160,70" Background="#FF595959" Height="207.5" VerticalAlignment="Bottom"
               HorizontalAlignment="Right" Width="280">
-            <Label x:Name="label" Content="Development Version" Margin="71,163,59,18"
-                   HorizontalContentAlignment="Center" Foreground="#FFC7C7C7" />
-            <TextBox x:Name="UsernameTextBox" HorizontalAlignment="Right" Width="191" Margin="0,50,28,0"
+                    <Label x:Name="label" Content="Development Version" Margin="71,0,59,18"
+                   HorizontalContentAlignment="Center" Foreground="#FFC7C7C7" Height="27" VerticalAlignment="Bottom" />
+                    <TextBox x:Name="UsernameTextBox" Margin="70,50,0,0"
                      Height="35" VerticalAlignment="Top" Background="#FF5F5F5F" BorderBrush="#FF5F5F5F"
-                     Foreground="#FFC7C7C7" VerticalContentAlignment="Center" />
-            <Label x:Name="UsernameLabel" Content="用户名" Margin="10,50,224,0" Foreground="#FFC7C7C7" VerticalAlignment="Top" Height="35" VerticalContentAlignment="Center" />
-            <Label x:Name="PasswordLabel" Content="密码" HorizontalAlignment="Left" Margin="10,95,0,0"
-                   Foreground="#FFC7C7C7" Width="46" Height="31" VerticalAlignment="Top" Grid.RowSpan="2" VerticalContentAlignment="Center" />
-            <PasswordBox x:Name="PasswordTextBox" Margin="61,0,0,82" KeyDown="PasswordTextBox_KeyDown"
-                         Background="#FF5F5F5F" BorderBrush="#FF5F5F5F" HorizontalAlignment="Left"
-                         Width="191" Height="35" VerticalAlignment="Bottom" Foreground="#FFC7C7C7" Grid.RowSpan="2" VerticalContentAlignment="Center" />
-            <CheckBox x:Name="isSaveCheckBox" Content="保存密码" VerticalAlignment="Top" Margin="0,140,0,0"
-                      HorizontalAlignment="Center" Foreground="#FFC7C7C7" Background="White" BorderThickness="1" BorderBrush="#FF5F5F5F" />
+                     Foreground="#FFC7C7C7" VerticalContentAlignment="Center" FontSize="15" HorizontalAlignment="Left" Width="185" />
+                    <Label x:Name="UsernameLabel" Content="用户名" Margin="10,50,0,0" Foreground="#FFC7C7C7" VerticalAlignment="Top" Height="35" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" HorizontalAlignment="Left" Width="55" />
+                    <Label x:Name="PasswordLabel" Content="密码" HorizontalAlignment="Left" Margin="10,95,0,0"
+                   Foreground="#FFC7C7C7" Width="55" Height="31" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" />
+                    <PasswordBox x:Name="PasswordTextBox" Margin="70,90,0,0" KeyDown="PasswordTextBox_KeyDown"
+                         Background="#FF5F5F5F" BorderBrush="#FF5F5F5F" Foreground="#FFC7C7C7" VerticalContentAlignment="Center" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="185" />
+                    <CheckBox x:Name="isSaveCheckBox" Content="保存密码" Margin="0,140,105,50"
+                      HorizontalAlignment="Right" Foreground="#FFC7C7C7" Background="White" BorderThickness="1" BorderBrush="#FF5F5F5F" HorizontalContentAlignment="Center" />
+                </Grid>
+            </Grid>
         </Grid>
-        <local:TitleGrid x:Name="TitleGrid" Height="30" VerticalAlignment="Top" Background="#FF151515">
-            <Viewbox Width="20" Height="20" HorizontalAlignment="Left" Margin="5,5,0,5">
-                <Canvas Width="24" Height="24">
-                    <Path Fill="#FFC7C7C7" Data="M17,12V3A1,1 0 0,0 16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z" />
-                </Canvas>
-            </Viewbox>
-            <Label x:Name="TitleLabel" Content="QhitChat" Foreground="#FFC7C7C7" FontSize="17" HorizontalAlignment="Center"/>
-            <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
-                d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="30"
-                Style="{DynamicResource Flat}">
-                <Viewbox>
-                    <Canvas Width="24" Height="24">
-                        <Path Fill="#FFC7C7C7" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
-                    </Canvas>
-                </Viewbox>
-            </Button>
-            <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515"
-                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
-                <Viewbox>
-                    <Canvas Width="24" Height="24">
-                        <Path Fill="#FFC7C7C7" Data="M20,14H4V10H20" />
-                    </Canvas>
-                </Viewbox>
-            </Button>
-        </local:TitleGrid>
-    </Grid>
+    </Border>
 </Window>

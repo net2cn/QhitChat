@@ -29,10 +29,10 @@ namespace QhitChat_Client.Windows
                 Native.GetMonitorInfo(monitor, monitorInfo);
                 Native.RECT rcWorkArea = monitorInfo.rcWork;
                 Native.RECT rcMonitorArea = monitorInfo.rcMonitor;
-                mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left);    // Add 20 offset to fill the whole area. Otherwise there will be some extra space. (Maybe use multiply?)
-                mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top);
-                mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left);
-                mmi.ptMaxSize.y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top);
+                mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left)-10;    // Add 20 offset to fill the whole area. Otherwise there will be some extra space. (Maybe use multiply?)
+                mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top)-10;
+                mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left)+20;
+                mmi.ptMaxSize.y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top)+20;
                 mmi.ptMinTrackSize.x = minWidth;
                 mmi.ptMinTrackSize.y = minHeight;
             }
