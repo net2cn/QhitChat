@@ -199,20 +199,22 @@
                                         <TransformGroup>
                                             <ScaleTransform CenterY="0.5" CenterX="0.5"/>
                                             <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                                            <RotateTransform Angle="118" CenterY="0.5" CenterX="0.5"/>
+                                            <RotateTransform Angle="0" CenterY="0.5" CenterX="0.5"/>
                                             <TranslateTransform X="0"/>
                                         </TransformGroup>
                                     </LinearGradientBrush.RelativeTransform>
                                     <GradientStop Color="#FFE6B6D9" Offset="1"/>
                                     <GradientStop Color="#FFDFAFE8" Offset="0"/>
                                     <GradientStop Color="#FF8778C3" Offset="0.382"/>
-                                    <GradientStop Color="#FF8778C3" Offset="0.596"/>
+                                    <GradientStop Color="#FF8778C3" Offset="0.618"/>
                                 </LinearGradientBrush>
                             </Grid.Background>
+                            <Rectangle Fill="Beige">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-12.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
                             <Grid>
-                                <Grid.Background>
-                                    <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-29.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
-                                </Grid.Background>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
