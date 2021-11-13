@@ -48,8 +48,12 @@
                       HorizontalAlignment="Center" Foreground="#FFC7C7C7" Background="White" BorderThickness="1" BorderBrush="#FF5F5F5F" />
         </Grid>
         <local:TitleGrid x:Name="TitleGrid" Height="30" VerticalAlignment="Top" Background="#FF151515">
-            <Label x:Name="TitleLabel" Content="QhitChat" Margin="10,0,155,0" Foreground="#FFC7C7C7"
-                FontSize="17" FontWeight="Bold" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
+            <Viewbox Width="20" Height="20" HorizontalAlignment="Left" Margin="5,5,0,5">
+                <Canvas Width="24" Height="24">
+                    <Path Fill="#FFC7C7C7" Data="M17,12V3A1,1 0 0,0 16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z" />
+                </Canvas>
+            </Viewbox>
+            <Label x:Name="TitleLabel" Content="QhitChat" Foreground="#FFC7C7C7" FontSize="17" HorizontalAlignment="Center"/>
             <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
                 d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="30"
                 Style="{DynamicResource Flat}">
