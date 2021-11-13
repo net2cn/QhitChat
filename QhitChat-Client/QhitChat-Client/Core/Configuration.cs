@@ -14,12 +14,12 @@ namespace QhitChat_Client.Core
 
         // Networking
 #if DEBUG
-        protected const string HOSTNAME = "localhost";
+        public const string HOSTNAME = "localhost";
 #else
         public const string HOSTNAME = "home.plus1sec.tech";
 #endif
-        protected const int PORT = 23340;
-        protected static readonly X509Certificate CERTIFICATE = new X509Certificate(@"Certificate/server.cer", "");
+        public const int PORT = 23340;
+        public static readonly X509Certificate CERTIFICATE = new X509Certificate(@"Certificate/server.cer", "");
         public static Network Network = new Network(HOSTNAME, PORT, CERTIFICATE);
 
         // User Authentication

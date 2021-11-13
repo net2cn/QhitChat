@@ -11,11 +11,75 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\pattern-1.svg" />
+    <None Remove="Resources\pattern-10.svg" />
+    <None Remove="Resources\pattern-11.svg" />
+    <None Remove="Resources\pattern-12.svg" />
+    <None Remove="Resources\pattern-13.svg" />
+    <None Remove="Resources\pattern-14.svg" />
+    <None Remove="Resources\pattern-15.svg" />
+    <None Remove="Resources\pattern-16.svg" />
+    <None Remove="Resources\pattern-17.svg" />
+    <None Remove="Resources\pattern-18.svg" />
+    <None Remove="Resources\pattern-19.svg" />
+    <None Remove="Resources\pattern-2.svg" />
+    <None Remove="Resources\pattern-20.svg" />
+    <None Remove="Resources\pattern-21.svg" />
+    <None Remove="Resources\pattern-22.svg" />
+    <None Remove="Resources\pattern-23.svg" />
+    <None Remove="Resources\pattern-24.svg" />
+    <None Remove="Resources\pattern-25.svg" />
+    <None Remove="Resources\pattern-26.svg" />
+    <None Remove="Resources\pattern-27.svg" />
+    <None Remove="Resources\pattern-28.svg" />
     <None Remove="Resources\pattern-29.svg" />
+    <None Remove="Resources\pattern-3.svg" />
+    <None Remove="Resources\pattern-30.svg" />
+    <None Remove="Resources\pattern-31.svg" />
+    <None Remove="Resources\pattern-32.svg" />
+    <None Remove="Resources\pattern-33.svg" />
+    <None Remove="Resources\pattern-4.svg" />
+    <None Remove="Resources\pattern-5.svg" />
+    <None Remove="Resources\pattern-6.svg" />
+    <None Remove="Resources\pattern-7.svg" />
+    <None Remove="Resources\pattern-8.svg" />
+    <None Remove="Resources\pattern-9.svg" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\pattern-1.svg" />
+    <Resource Include="Resources\pattern-10.svg" />
+    <Resource Include="Resources\pattern-11.svg" />
+    <Resource Include="Resources\pattern-12.svg" />
+    <Resource Include="Resources\pattern-13.svg" />
+    <Resource Include="Resources\pattern-14.svg" />
+    <Resource Include="Resources\pattern-15.svg" />
+    <Resource Include="Resources\pattern-16.svg" />
+    <Resource Include="Resources\pattern-17.svg" />
+    <Resource Include="Resources\pattern-18.svg" />
+    <Resource Include="Resources\pattern-19.svg" />
+    <Resource Include="Resources\pattern-2.svg" />
+    <Resource Include="Resources\pattern-20.svg" />
+    <Resource Include="Resources\pattern-21.svg" />
+    <Resource Include="Resources\pattern-22.svg" />
+    <Resource Include="Resources\pattern-23.svg" />
+    <Resource Include="Resources\pattern-24.svg" />
+    <Resource Include="Resources\pattern-25.svg" />
+    <Resource Include="Resources\pattern-26.svg" />
+    <Resource Include="Resources\pattern-27.svg" />
+    <Resource Include="Resources\pattern-28.svg" />
     <Resource Include="Resources\pattern-29.svg" />
+    <Resource Include="Resources\pattern-3.svg" />
+    <Resource Include="Resources\pattern-30.svg" />
+    <Resource Include="Resources\pattern-31.svg" />
+    <Resource Include="Resources\pattern-32.svg" />
+    <Resource Include="Resources\pattern-33.svg" />
+    <Resource Include="Resources\pattern-4.svg" />
+    <Resource Include="Resources\pattern-5.svg" />
+    <Resource Include="Resources\pattern-6.svg" />
+    <Resource Include="Resources\pattern-7.svg" />
+    <Resource Include="Resources\pattern-8.svg" />
+    <Resource Include="Resources\pattern-9.svg" />
   </ItemGroup>
 
   <ItemGroup>

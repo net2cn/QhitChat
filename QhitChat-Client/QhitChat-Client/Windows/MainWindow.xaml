@@ -1,14 +1,14 @@
-﻿<Window
+﻿<Window x:Class="QhitChat_Client.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QhitChat_Client.Windows"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="QhitChat_Client.Windows.MainWindow"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="QhitChat" Height="820" Width="1220" ResizeMode="CanResizeWithGrip"
-        Background="{x:Null}" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" MinWidth="1200" MinHeight="800" SourceInitialized="Window_SourceInitialized" AllowsTransparency="True" WindowStyle="None">
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" MinWidth="1200" MinHeight="800" SourceInitialized="Window_SourceInitialized" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}">
     <Window.Resources>
         <Style x:Key="Flat">
             <Setter Property="FrameworkElement.MaxWidth" Value="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"/>
@@ -32,7 +32,7 @@
             <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.8" 
                 Color="Gray"/>
         </Border.Effect>
-        <Grid Background="#FF474747" Margin="10">
+        <Grid Background="#FF2C2C2C" Margin="10">
             <local:TitleGrid x:Name="TitleGrid" Height="30" VerticalAlignment="Top" Background="#FF151515">
                 <Viewbox Width="20" Height="20" HorizontalAlignment="Left" Margin="5,5,0,5">
                     <Canvas Width="24" Height="24">
