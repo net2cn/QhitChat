@@ -5,6 +5,9 @@ using System.Text;
 
 namespace QhitChat_Client.Windows
 {
+    /// <summary>
+    /// This class contains Native codes to hook WinAPI in order to make borderless window behave normal as bordered window.
+    /// </summary>
     public static class Native
     {
 
@@ -14,21 +17,28 @@ namespace QhitChat_Client.Windows
         [DllImport("user32")]
         internal static extern IntPtr MonitorFromWindow(IntPtr handle, int flags);
 
+        /// <summary>
+        /// Hook WinAPI WmGetMinMaxInfo to properly handle window maximize.
+        /// If not hooked, during maximization window will ignore taskbar and use all avaliable space.
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="lParam"></param>
+        /// <param name="minWidth"></param>
+        /// <param name="minHeight"></param>
         public static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam, int minWidth, int minHeight)
         {
             MINMAXINFO mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
 
-            // Adjust the maximized size and position to fit the work area of the correct monitor
+            // Adjust the maximized size and position to fit the work area of the correct monitor.
             int MONITOR_DEFAULTTONEAREST = 0x00000002;
-            IntPtr monitor = Native.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
 
             if (monitor != IntPtr.Zero)
             {
-
-                Native.MONITORINFO monitorInfo = new Native.MONITORINFO();
-                Native.GetMonitorInfo(monitor, monitorInfo);
-                Native.RECT rcWorkArea = monitorInfo.rcWork;
-                Native.RECT rcMonitorArea = monitorInfo.rcMonitor;
+                MONITORINFO monitorInfo = new MONITORINFO();
+                GetMonitorInfo(monitor, monitorInfo);
+                RECT rcWorkArea = monitorInfo.rcWork;
+                RECT rcMonitorArea = monitorInfo.rcMonitor;
                 mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left)-10;    // Add 20 offset to fill the whole area. Otherwise there will be some extra space. (Maybe use multiply?)
                 mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top)-10;
                 mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left)+20;
