@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,17 +40,37 @@ namespace QhitChat_Client.Windows
             }
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             Core.Configuration.username = UsernameTextBox.Text;
-            Core.Configuration.password = PasswordTextBox.Password;
+            Core.Configuration.password = Core.Utils.SHA512Hash(PasswordTextBox.Password);
 
             if (Core.Configuration.username == "" || Core.Configuration.password == "")
             {
                 MessageBox.Show("用户名或密码不得为空！", "一般错误", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            DelayButton(LoginButton, 2000);
+
+            try
+            {
+                LoginButton.IsEnabled = false;
+                if (await API.Authentication.LoginAsync(Core.Configuration.username, Core.Configuration.password))
+                {
+                    // Login success.
+                    new MainWindow().Show();
+                    Close();
+                    return;
+                }
+                else
+                {
+                    // Login failed.
+                    MessageBox.Show("登陆失败！", "一般错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            finally
+            {
+                DelayButton(LoginButton, 2000);
+            }
         }
 
         private async void DelayButton(Control control, int ms)

@@ -135,7 +135,7 @@ namespace QhitChat_Server
             {
                 using (var jsonRpc = new JsonRpc(messageHandler))
                 {
-                    jsonRpc.AddLocalRpcTarget(new Controller(jsonRpc));
+                    jsonRpc.AddLocalRpcTarget(new API.Controller(jsonRpc));
                     Console.Error.WriteLineAsync($"JSON-RPC listener attached to #{_id}. Waiting for requests...");
                     jsonRpc.StartListening();
                     await jsonRpc.Completion;

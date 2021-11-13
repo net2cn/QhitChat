@@ -38,6 +38,6 @@ namespace QhitChat_Client.Core
             Trace.WriteLine("Debug mode running.");
             TITLE = "QhitChat DEBUG Version" + String.Format(" {0}", Assembly.GetExecutingAssembly().GetName().Version);
 #endif
+        }
     }
-}
 }

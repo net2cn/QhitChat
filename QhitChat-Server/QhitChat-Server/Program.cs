@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using StreamJsonRpc;
 using QhitChat_Server;
 using System.Security.Cryptography.X509Certificates;
+using QhitChat_Server.Presistent;
 
 class Program
 {
@@ -20,6 +21,9 @@ class Program
     {
         var port = 23340;
         IPAddress localAddress = IPAddress.Parse("127.0.0.1");
+
+        // Initialize presistent infrastructure.
+        _ = Presistent.Instance;
 
         Console.WriteLine($"Start lisening {localAddress}:{port}.");
         var server = new TcpListener(localAddress, port);

@@ -24,6 +24,13 @@
     <None Update="Certificate\server.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="QhitChat.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Presistent\Quene\" />
   </ItemGroup>
 
 </Project>
