@@ -22,7 +22,7 @@ namespace QhitChat_Client.Windows
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //TitleLabel.Content = Core.Configuration.TITLE;
+            TitleBar.Title = Core.Configuration.TITLE;
             relationship = await Core.API.Relationship.GetRelationshipAsync(Core.Configuration.Account, Core.Configuration.Token);
         }
 
@@ -30,33 +30,6 @@ namespace QhitChat_Client.Windows
         {
             IntPtr handle = new WindowInteropHelper(this).Handle;
             HwndSource.FromHwnd(handle)?.AddHook(WindowProc);
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            Window window = GetWindow(this);
-
-            if (window.WindowState != WindowState.Minimized)
-                window.WindowState = WindowState.Minimized;
-        }
-
-        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            Window window = GetWindow(this);
-
-            if (window.WindowState != WindowState.Maximized)
-            {
-                window.WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                window.WindowState = WindowState.Normal;
-            }
         }
 
         private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

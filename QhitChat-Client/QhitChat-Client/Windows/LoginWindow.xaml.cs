@@ -28,7 +28,7 @@ namespace QhitChat_Client.Windows
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            TitleLabel.Content = Core.Configuration.TITLE;
+            TitleBar.Title = Core.Configuration.TITLE;
             if (await TestConnectionAsync())
             {
                 NotificationLabel.Content = "Connected.";
@@ -90,19 +90,6 @@ namespace QhitChat_Client.Windows
         {
             if (e.Key == Key.Return)
                 LoginButton_Click(sender, e);
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            Window window = GetWindow(this);
-
-            if (window.WindowState != WindowState.Minimized)
-                window.WindowState = WindowState.Minimized;
         }
 
         private void DisplayMessage(string message)
