@@ -9,7 +9,7 @@ namespace QhitChat_Client.Core.API
     {
         public async static Task<List<string>> GetRelationshipAsync(string account, string token)
         {
-            return await Configuration.Network.InvokeAsync<List<string>>("GetRelationship", account, token);
+            return await Configuration.Network.InvokeAsync<List<string>>("Authentication/GetRelationship", account, token);
         }
     }
 }
