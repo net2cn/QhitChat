@@ -23,9 +23,9 @@ namespace QhitChat_Client.Core
         public static Network Network = new Network(HOSTNAME, PORT, CERTIFICATE);
 
         // User Authentication
-        public static string username;
-        public static string password;
-        public static string authToken;
+        public static string Account;
+        public static string Password;
+        public static string Token;
 
         private static readonly Lazy<Configuration> lazy =
             new Lazy<Configuration>(() => new Configuration());

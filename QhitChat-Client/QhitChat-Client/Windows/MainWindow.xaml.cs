@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Interop;
 using SharpVectors.Converters;
@@ -11,15 +12,18 @@ namespace QhitChat_Client.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<string> relationship;
+
         public MainWindow()
         {
             SourceInitialized += Window_SourceInitialized;
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //TitleLabel.Content = Core.Configuration.TITLE;
+            relationship = await Core.API.Relationship.GetRelationshipAsync(Core.Configuration.Account, Core.Configuration.Token);
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)

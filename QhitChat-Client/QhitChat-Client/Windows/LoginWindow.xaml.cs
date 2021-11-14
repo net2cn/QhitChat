@@ -29,23 +29,18 @@ namespace QhitChat_Client.Windows
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             TitleLabel.Content = Core.Configuration.TITLE;
-            if (await API.Utils.PingAsync()=="Pong")
+            if (await TestConnectionAsync())
             {
                 NotificationLabel.Content = "Connected.";
-            }
-            else
-            {
-                MessageBox.Show("无法连接服务器！软件即将退出", "严重错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                Environment.Exit(0);
             }
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            Core.Configuration.username = UsernameTextBox.Text;
-            Core.Configuration.password = Core.Utils.SHA512Hash(PasswordTextBox.Password);
+            Core.Configuration.Account = UsernameTextBox.Text;
+            Core.Configuration.Password = PasswordTextBox.Password;
 
-            if (Core.Configuration.username == "" || Core.Configuration.password == "")
+            if (Core.Configuration.Account == "" || Core.Configuration.Password == "")
             {
                 MessageBox.Show("用户名或密码不得为空！", "一般错误", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -54,7 +49,8 @@ namespace QhitChat_Client.Windows
             try
             {
                 LoginButton.IsEnabled = false;
-                if (await API.Authentication.LoginAsync(Core.Configuration.username, Core.Configuration.password))
+                var salt = await Core.API.Authentication.GetSaltAsync(Core.Configuration.Account);   // Get salt to calculate salted password.
+                if (await Core.API.Authentication.LoginAsync(Core.Configuration.Account, Core.Utils.SHA512Hash(Core.Configuration.Password+salt)))
                 {
                     // Login success.
                     new MainWindow().Show();
@@ -64,7 +60,7 @@ namespace QhitChat_Client.Windows
                 else
                 {
                     // Login failed.
-                    MessageBox.Show("登陆失败！", "一般错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    DisplayMessage("登陆失败！");
                 }
             }
             finally
@@ -78,7 +74,17 @@ namespace QhitChat_Client.Windows
             control.IsEnabled = false;
             await Task.Delay(ms);
             control.IsEnabled = true;
-        } //防止用户点击太快导致出不可描述的Bug
+        } // 防止用户点击太快导致出不可描述的Bug
+
+        private async Task<bool> TestConnectionAsync()
+        {
+            if (await Core.API.Utils.PingAsync() == "Pong")
+            {
+                return true;
+            }
+            await Task.Delay(1000);
+            return await TestConnectionAsync();
+        }
 
         private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -99,5 +105,9 @@ namespace QhitChat_Client.Windows
                 window.WindowState = WindowState.Minimized;
         }
 
+        private void DisplayMessage(string message)
+        {
+            MainSnackbar.MessageQueue?.Enqueue(message);
+        }
     }
 }

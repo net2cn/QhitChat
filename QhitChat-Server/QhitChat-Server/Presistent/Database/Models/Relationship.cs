@@ -8,8 +8,9 @@ namespace QhitChat_Server.Presistent.Database.Models
     public class Relationship
     {
         [Key]
-        public string FromUuid { get; set; }
-        [Key]
-        public string ToUuid { get; set; }
+        public string From { get; set; }
+
+        [Required]
+        public string To { get; set; }
     }
 }

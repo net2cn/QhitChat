@@ -35,17 +35,45 @@ namespace QhitChat_Server.API
             Console.Error.WriteLineAsync("Recieved.");
         }
 
-        public bool Login(string uuid, string password)
+        public bool Login(string account, string password)
         {
             // TODO: Generate unique token and return to client for furthuer usage.
             var user = (from u in Presistent.Presistent.DatabaseContext.User
-                        where u.Uuid == uuid
+                        where u.Account == account
                         select u).SingleOrDefault();
             if (user!=null && user.Password == password)
             {
                 return true;
             }
             return false;
+        }
+
+        public string GetSalt(string account)
+        {
+            var user = (from u in Presistent.Presistent.DatabaseContext.User
+                        where u.Account == account
+                        select u).SingleOrDefault();
+            if (user != null)
+            {
+                return user.Salt;
+            }
+            return null;
+        }
+
+        public List<string> GetRelationship(string account, string token)
+        {
+            var user = (from u in Presistent.Presistent.DatabaseContext.User
+                        where u.Account == account
+                        select u).SingleOrDefault();
+            if (user != null && user.Token == token)
+            {
+                var relationship = (from r in Presistent.Presistent.DatabaseContext.Relationship
+                            where r.From == account
+                            select r.To).ToList();
+                return relationship;
+            }
+
+            return null;
         }
     }
 }

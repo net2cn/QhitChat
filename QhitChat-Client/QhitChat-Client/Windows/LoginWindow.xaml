@@ -57,36 +57,46 @@
                     </Viewbox>
                 </Button>
             </local:TitleGrid>
-            <Grid Background="#FF2D2D2D" Margin="0,30,0,0">
-                <Grid>
-                    <Rectangle Fill="Gray">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-23.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <Label x:Name="NotificationLabel" Content="No Connection." Margin="0,0,0,0.336" Background="#FF2D8CEC"
+            <materialDesign:DialogHost
+            Identifier="RootDialog"
+            DialogTheme="Inherit"
+            SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}"
+            Margin="0,30,0,0">
+                <materialDesign:DrawerHost
+                IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                    <Grid Background="#FF2D2D2D">
+                        <Rectangle Fill="Gray">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-23.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <Label x:Name="NotificationLabel" Content="No Connection." Margin="0,0,0,0.336" Background="#FF2D8CEC"
                Foreground="#FFC7C7C7" Height="24.572" VerticalAlignment="Bottom" />
-                    <Button x:Name="LoginButton" Content="登录" Margin="0,0,0,25" Click="LoginButton_Click" FontSize="20"
+                        <Button x:Name="LoginButton" Content="登录" Margin="0,0,0,25" Click="LoginButton_Click" FontSize="20"
                 RenderTransformOrigin="1.883,2.357" BorderThickness="0" Background="#FF474747" Foreground="#FFC7C7C7"
                 HorizontalAlignment="Right" Width="102" Height="42" VerticalAlignment="Bottom"
                 Style="{DynamicResource Flat}" />
-                    <Grid Margin="0,0,160,70" Background="#FF595959" Height="207.5" VerticalAlignment="Bottom"
+                        <Grid Margin="0,0,160,70" Background="#FF595959" Height="207.5" VerticalAlignment="Bottom"
               HorizontalAlignment="Right" Width="280">
-                        <Label x:Name="label" Content="Development Version" Margin="71,0,59,18"
+                            <Label x:Name="label" Content="Development Version" Margin="71,0,59,18"
                    HorizontalContentAlignment="Center" Foreground="#FFC7C7C7" Height="27" VerticalAlignment="Bottom" />
-                        <TextBox x:Name="UsernameTextBox" Margin="70,50,0,0"
+                            <TextBox x:Name="UsernameTextBox" Margin="70,50,0,0"
                      Height="35" VerticalAlignment="Top" Background="#FF5F5F5F" BorderBrush="#FF5F5F5F"
                      Foreground="#FFC7C7C7" VerticalContentAlignment="Center" FontSize="15" HorizontalAlignment="Left" Width="185" />
-                        <Label x:Name="UsernameLabel" Content="用户名" Margin="10,50,0,0" Foreground="#FFC7C7C7" VerticalAlignment="Top" Height="35" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" HorizontalAlignment="Left" Width="55" />
-                        <Label x:Name="PasswordLabel" Content="密码" HorizontalAlignment="Left" Margin="10,95,0,0"
+                            <Label x:Name="UsernameLabel" Content="用户名" Margin="10,50,0,0" Foreground="#FFC7C7C7" VerticalAlignment="Top" Height="35" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" HorizontalAlignment="Left" Width="55" />
+                            <Label x:Name="PasswordLabel" Content="密码" HorizontalAlignment="Left" Margin="10,95,0,0"
                    Foreground="#FFC7C7C7" Width="55" Height="31" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" />
-                        <PasswordBox x:Name="PasswordTextBox" Margin="70,90,0,0" KeyDown="PasswordTextBox_KeyDown"
+                            <PasswordBox x:Name="PasswordTextBox" Margin="70,90,0,0" KeyDown="PasswordTextBox_KeyDown"
                          Background="#FF5F5F5F" BorderBrush="#FF5F5F5F" Foreground="#FFC7C7C7" VerticalContentAlignment="Center" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="185" />
-                        <CheckBox x:Name="isSaveCheckBox" Content="保存密码" Margin="0,140,105,50"
+                            <CheckBox x:Name="isSaveCheckBox" Content="保存密码" Margin="0,140,105,50"
                       HorizontalAlignment="Right" Foreground="#FFC7C7C7" Background="White" BorderThickness="1" BorderBrush="#FF5F5F5F" HorizontalContentAlignment="Center" />
+                        </Grid>
+                        <materialDesign:Snackbar
+                        x:Name="MainSnackbar"
+                        MessageQueue="{materialDesign:MessageQueue}"/>
                     </Grid>
-                </Grid>
-            </Grid>
+                </materialDesign:DrawerHost>
+            </materialDesign:DialogHost>
         </Grid>
     </Border>
 </Window>

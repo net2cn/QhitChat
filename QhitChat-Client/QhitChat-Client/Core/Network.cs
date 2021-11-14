@@ -13,11 +13,11 @@ namespace QhitChat_Client.Core
 {
     public class Network
     {
+        private TcpClient client;
         private JsonRpc remote;
         private string address;
         private int port;
         private X509Certificate2 certificate;
-        private JsonMessageFormatter messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
 
         public Network(string address, int port, X509Certificate certificate)
         {
@@ -30,15 +30,27 @@ namespace QhitChat_Client.Core
         {
             try
             {
-                var client = await ConnectToServerAsync(address, port);
-                ConnectRpcServer(client);
+                await TcpConnectToServerAsync(address, port);
+                ConnectRpcServer();
             }
-            catch{ }
+            catch{
+                if (remote == null)
+                {
+                    // Retry after 3000ms
+                    await Task.Delay(3000);
+                    ConnectAsync(address, port);
+                }
+            }
         }
 
-        private async Task<TcpClient> ConnectToServerAsync(string address, int port)
+        private async Task TcpConnectToServerAsync(string address, int port)
         {
-            TcpClient client = new TcpClient();
+            if (client != null)
+            {
+                client.Close();
+                client = null;
+            }
+            client = new TcpClient();
             try
             {
                 // Create a TCP/IP client socket.
@@ -47,10 +59,9 @@ namespace QhitChat_Client.Core
             catch(Exception ex)
             {
                 Trace.WriteLine($"No TCP connection was made to the server: {ex.Message}");
-                throw;
+                throw ex;
             }
             Trace.WriteLine("Client connected.");
-            return client;
         }
 
         // The following method is invoked by the RemoteCertificateValidationDelegate.
@@ -99,12 +110,13 @@ namespace QhitChat_Client.Core
             return sslStream;
         }
 
-        private async Task ConnectRpcServer(TcpClient client)
+        private async Task ConnectRpcServer()
         {
             try
             {
                 using (var stream = WrapSslStreamAsClient(client))
                 {
+                    var messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
                     var messageHandler = new LengthHeaderMessageHandler(stream, stream, messageFormatter);
                     remote = new JsonRpc(messageHandler);
                     remote.StartListening();
@@ -124,7 +136,7 @@ namespace QhitChat_Client.Core
                 }
             }
         }
-
+#nullable enable
         public async Task<T> InvokeAsync<T>(string targetName, params object?[]? arguments)
         {
             try
@@ -146,5 +158,6 @@ namespace QhitChat_Client.Core
             catch { }
             return default(T);
         }
+#nullable disable
     }
 }
