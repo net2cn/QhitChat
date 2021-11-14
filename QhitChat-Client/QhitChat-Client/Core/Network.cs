@@ -1,7 +1,6 @@
 ﻿using StreamJsonRpc;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
@@ -33,7 +32,8 @@ namespace QhitChat_Client.Core
                 await TcpConnectToServerAsync(address, port);
                 ConnectRpcServer();
             }
-            catch{
+            catch
+            {
                 if (remote == null)
                 {
                     // Retry after 3000ms
@@ -56,7 +56,7 @@ namespace QhitChat_Client.Core
                 // Create a TCP/IP client socket.
                 await client.ConnectAsync(address, port);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Trace.WriteLine($"No TCP connection was made to the server: {ex.Message}");
                 throw ex;

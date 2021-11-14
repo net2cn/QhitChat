@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace QhitChat_Client.Windows
 {
@@ -50,7 +40,7 @@ namespace QhitChat_Client.Windows
             {
                 LoginButton.IsEnabled = false;
                 var salt = await Core.API.Authentication.GetSaltAsync(Core.Configuration.Account);   // Get salt to calculate salted password.
-                if (await Core.API.Authentication.LoginAsync(Core.Configuration.Account, Core.Utils.SHA512Hash(Core.Configuration.Password+salt)))
+                if (await Core.API.Authentication.LoginAsync(Core.Configuration.Account, Core.Utils.SHA512Hash(Core.Configuration.Password + salt)))
                 {
                     // Login success.
                     new MainWindow().Show();

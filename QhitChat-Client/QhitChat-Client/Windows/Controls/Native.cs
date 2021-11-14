@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace QhitChat_Client.Windows
 {
@@ -39,10 +37,10 @@ namespace QhitChat_Client.Windows
                 GetMonitorInfo(monitor, monitorInfo);
                 RECT rcWorkArea = monitorInfo.rcWork;
                 RECT rcMonitorArea = monitorInfo.rcMonitor;
-                mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left)-10;    // Add 20 offset to fill the whole area. Otherwise there will be some extra space. (Maybe use multiply?)
-                mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top)-10;
-                mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left)+20;
-                mmi.ptMaxSize.y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top)+20;
+                mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left) - 10;    // Add 20 offset to fill the whole area. Otherwise there will be some extra space. (Maybe use multiply?)
+                mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top) - 10;
+                mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left) + 20;
+                mmi.ptMaxSize.y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top) + 20;
                 mmi.ptMinTrackSize.x = minWidth;
                 mmi.ptMinTrackSize.y = minHeight;
             }
@@ -88,10 +86,10 @@ namespace QhitChat_Client.Windows
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class MONITORINFO
-        {       
+        {
             public int cbSize = Marshal.SizeOf(typeof(MONITORINFO));
-            public RECT rcMonitor = new RECT();       
-            public RECT rcWork = new RECT();        
+            public RECT rcMonitor = new RECT();
+            public RECT rcWork = new RECT();
             public int dwFlags = 0;
         }
 

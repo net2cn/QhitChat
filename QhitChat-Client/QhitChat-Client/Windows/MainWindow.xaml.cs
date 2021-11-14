@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Interop;
-using SharpVectors.Converters;
-using SharpVectors.Renderers.Wpf;
 
 namespace QhitChat_Client.Windows
 {
