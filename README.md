@@ -14,4 +14,8 @@ Yet another prototype instant messaging application written in C#.
 ### Extended requirements:
 - Python 3.7 with Jpyuter.
 
+## Screenshots
+![LoginWindow](images/screenshot_2021-11-15_164404.png)
+![MainWindow](images/screenshot_2021-11-15_164642.png)
+
 2021, Team CCTV.
