@@ -13,18 +13,14 @@ namespace QhitChat_Client.Windows
     {
         public LoginWindow()
         {
-            _ = Core.Configuration.Instance;    // Initialize global Configuration instance.
+            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
+            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcConnected;
             InitializeComponent();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             TitleBar.Title = Core.Configuration.TITLE;
-            if (await TestConnectionAsync())
-            {
-                NotificationLabel.Content = "Connected.";
-                NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
-            }
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -100,6 +96,21 @@ namespace QhitChat_Client.Windows
         private void DisplayMessage(string message)
         {
             MainSnackbar.MessageQueue?.Enqueue(message);
+        }
+
+        private void OnJsonRpcDisconnected(object sender, Core.NetworkEventArgs e)
+        {
+            NotificationLabel.Content = "No Connection.";
+            NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFCA5100"));
+        }
+
+        private async void OnJsonRpcConnected(object sender, Core.NetworkEventArgs e)
+        {
+            if (await TestConnectionAsync())
+            {
+                NotificationLabel.Content = "Connected.";
+                NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
+            }
         }
     }
 }

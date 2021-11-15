@@ -13,21 +13,40 @@ namespace QhitChat_Client.Core
     public class Network
     {
         private TcpClient client;
-        private JsonRpc remote;
+        private JsonRpc _remote;
         private string address;
         private int port;
         private X509Certificate2 certificate;
+
+        public event EventHandler<NetworkEventArgs> RaiseNetworkEvent;
+
+        public bool Connected
+        {
+            get => remote != null;
+        }
+
+        private JsonRpc remote
+        {
+            get { return _remote; }
+            set
+            {
+                _remote = value;
+                if (_remote == null)
+                {
+                    OnRaiseJsonRpcDisconnected(new NetworkEventArgs("Unable to establish JSON-RPC connection."));
+                }
+                else
+                {
+                    OnRaiseJsonRpcConnected(new NetworkEventArgs("JSON-RPC connection established successfully."));
+                }
+            }
+        }
 
         public Network(string address, int port, X509Certificate certificate)
         {
             this.address = address;
             this.port = port;
             this.certificate = new X509Certificate2(certificate);
-        }
-
-        public bool Connected
-        {
-            get => remote != null;
         }
 
         /// <summary>
@@ -41,7 +60,7 @@ namespace QhitChat_Client.Core
             try
             {
                 await TcpConnectToServerAsync(address, port);
-                ConnectRpcServer();
+                await ConnectRpcServer();
             }
             catch
             {
@@ -49,7 +68,7 @@ namespace QhitChat_Client.Core
                 {
                     // Retry after 3000ms
                     await Task.Delay(3000);
-                    ConnectAsync(address, port);
+                    await ConnectAsync(address, port);
                 }
             }
         }
@@ -62,27 +81,25 @@ namespace QhitChat_Client.Core
         /// <returns></returns>
         private async Task TcpConnectToServerAsync(string address, int port)
         {
-            if (client != null)
+            // TODO: fix tcp connection is made twice when reconnecting.
+            if (client != null && client.Connected!=true)
             {
                 client.Close();
                 client = null;
             }
-            else
+
+            client = new TcpClient();
+
+            try
             {
-                client = new TcpClient();
-
-                try
-                {
-                    // Create a TCP/IP client socket.
-                    await client.ConnectAsync(address, port);
-                }
-                catch (Exception e)
-                {
-                    Trace.WriteLine($"No TCP connection was made to the server: {e.Message}");
-                    throw;
-                }
+                // Create a TCP/IP client socket.
+                await client.ConnectAsync(address, port);
             }
-
+            catch (Exception e)
+            {
+                Trace.WriteLine($"No TCP connection was made to the server: {e.Message}");
+                throw;
+            }
             Trace.WriteLine("Client connected.");
         }
 
@@ -149,7 +166,7 @@ namespace QhitChat_Client.Core
 
         private async Task ConnectRpcServer()
         {
-            if (client != null)
+            if (client != null || client.Connected == true)
             {
                 try
                 {
@@ -164,7 +181,7 @@ namespace QhitChat_Client.Core
                 }
                 catch (Exception e)
                 {
-                    Trace.WriteLine($"Failed to create JsonRpc instance: {e.Message}");
+                    Trace.WriteLine($"Failed to create JSON-RPC instance: {e.Message}");
                     throw;
                 }
                 finally
@@ -176,7 +193,13 @@ namespace QhitChat_Client.Core
                     }
                 }
             }
+            else
+            {
+                throw new SocketException((int)SocketError.NotConnected);
+            }
         }
+
+
 
 #nullable enable
         public async Task<T> InvokeAsync<T>(string targetName, params object?[]? arguments)
@@ -204,5 +227,45 @@ namespace QhitChat_Client.Core
             return default;
         }
 #nullable disable
+
+        protected virtual async void OnRaiseJsonRpcDisconnected(NetworkEventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler<NetworkEventArgs> raiseEvent = RaiseNetworkEvent;
+
+            // Event will be null if there are no subscribers
+            if (raiseEvent != null)
+            {
+                raiseEvent(this, e);    // Call to raise the event.
+                await Task.Delay(3000);
+                await ConnectAsync(address, port);
+            }
+        }
+
+        protected virtual void OnRaiseJsonRpcConnected(NetworkEventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler<NetworkEventArgs> raiseEvent = RaiseNetworkEvent;
+
+            // Event will be null if there are no subscribers
+            if (raiseEvent != null)
+            {
+                raiseEvent(this, e);    // Call to raise the event.
+            }
+        }
+    }
+
+    public class NetworkEventArgs : EventArgs
+    {
+        public NetworkEventArgs(string message)
+        {
+            Message = message;
+        }
+
+        public string Message { get; set; }
     }
 }
