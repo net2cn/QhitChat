@@ -38,7 +38,7 @@ namespace QhitChat_Client.Windows
                 return;
             }
 
-            if (NotificationLabel.Content != "Connected")
+            if (!Core.Configuration.Network.Connected)
             {
                 DisplayMessage("无网络连接！");
                 return;
@@ -48,17 +48,24 @@ namespace QhitChat_Client.Windows
             {
                 LoginButton.IsEnabled = false;
                 var salt = await Core.API.Authentication.GetSaltAsync(Core.Configuration.Account);   // Get salt to calculate salted password.
-                if (await Core.API.Authentication.LoginAsync(Core.Configuration.Account, Core.Utils.SHA512Hash(Core.Configuration.Password + salt)))
+                var token = await Core.API.Authentication.LoginAsync(Core.Configuration.Account, Core.Utils.SHA512Hash(Core.Configuration.Password + salt));
+
+                if (!token.StartsWith(Core.CodeDefinition.ErrorPrefix))
                 {
                     // Login success.
                     new MainWindow().Show();
                     Close();
                     return;
                 }
-                else
+                else if (token == Core.CodeDefinition.Authentication.NoUser)
                 {
                     // Login failed.
-                    DisplayMessage("登陆失败！");
+                    DisplayMessage("登陆失败！用户不存在！");
+                }
+                else if (token == Core.CodeDefinition.Authentication.WrongPassword)
+                {
+                    // Login failed.
+                    DisplayMessage("登陆失败！密码错误！");
                 }
             }
             finally

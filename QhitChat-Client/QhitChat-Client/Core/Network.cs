@@ -25,6 +25,11 @@ namespace QhitChat_Client.Core
             this.certificate = new X509Certificate2(certificate);
         }
 
+        public bool Connected
+        {
+            get => remote != null;
+        }
+
         /// <summary>
         /// Connect to server with JsonRpc protocol. TLS is used as a secured layer for communication underlying RPC protocol.
         /// </summary>

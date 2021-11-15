@@ -6,17 +6,26 @@ namespace QhitChat_Server.API
     class Authentication
     {
         [JsonRpcMethod("Authentication/Login")]
-        public static bool Login(string account, string password)
+        public static string Login(string account, string password)
         {
             // TODO: Generate unique token and return to client for furthuer usage.
             var user = (from u in Presistent.Presistent.DatabaseContext.User
                         where u.Account == account
                         select u).SingleOrDefault();
-            if (user != null && user.Password == password)
+            if(user == null)
             {
-                return true;
+                return Core.CodeDefinition.Authentication.NoUser;
             }
-            return false;
+
+            if (user.Password == password)
+            {
+                var token = Core.Authentication.GenerateToken();
+                user.Token = token;
+                user.Status = 1;
+                Presistent.Presistent.DatabaseContext.SaveChanges();
+                return token;
+            }
+            return Core.CodeDefinition.Authentication.WrongPassword;
         }
 
         [JsonRpcMethod("Authentication/GetSalt")]
