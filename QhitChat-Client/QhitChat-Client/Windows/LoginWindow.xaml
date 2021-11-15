@@ -47,8 +47,8 @@
                                 <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-23.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
                             </Rectangle.OpacityMask>
                         </Rectangle>
-                        <Label x:Name="NotificationLabel" Content="No Connection." Margin="0,0,0,0.336" Background="#FF2D8CEC"
-               Foreground="#FFC7C7C7" Height="24.572" VerticalAlignment="Bottom" />
+                        <Label x:Name="NotificationLabel" Content="No Connection." Margin="0,0,0,0.336" Background="#FFCA5100"
+               Foreground="White" Height="24.572" VerticalAlignment="Bottom" />
                         <Button x:Name="LoginButton" Content="登录" Margin="0,0,0,25" Click="LoginButton_Click" FontSize="20"
                 RenderTransformOrigin="1.883,2.357" BorderThickness="0" Background="#FF474747" Foreground="#FFC7C7C7"
                 HorizontalAlignment="Right" Width="102" Height="42" VerticalAlignment="Bottom"

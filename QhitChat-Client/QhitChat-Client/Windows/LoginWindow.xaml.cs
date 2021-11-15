@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace QhitChat_Client.Windows
 {
@@ -22,6 +23,7 @@ namespace QhitChat_Client.Windows
             if (await TestConnectionAsync())
             {
                 NotificationLabel.Content = "Connected.";
+                NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
             }
         }
 
@@ -32,7 +34,13 @@ namespace QhitChat_Client.Windows
 
             if (Core.Configuration.Account == "" || Core.Configuration.Password == "")
             {
-                MessageBox.Show("用户名或密码不得为空！", "一般错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+                DisplayMessage("用户名或密码不得为空！");
+                return;
+            }
+
+            if (NotificationLabel.Content != "Connected")
+            {
+                DisplayMessage("无网络连接！");
                 return;
             }
 

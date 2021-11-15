@@ -8,6 +8,7 @@
     <StartupObject>QhitChat_Client.App</StartupObject>
     <ApplicationIcon />
     <Win32Resource />
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -84,6 +85,7 @@
 
   <ItemGroup>
     <Folder Include="Certificate\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,21 +93,6 @@
     <PackageReference Include="MaterialDesignThemes" Version="4.2.1" />
     <PackageReference Include="SharpVectors" Version="1.7.6" />
     <PackageReference Include="StreamJsonRpc" Version="2.8.28" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
