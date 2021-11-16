@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QhitChat_Client.Windows"
+        xmlns:core="clr-namespace:QhitChat_Client.Core"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:Controls="clr-namespace:QhitChat_Client.Windows.Controls" x:Class="QhitChat_Client.Windows.MainWindow"
@@ -34,7 +35,7 @@
                 Color="Gray"/>
         </Border.Effect>
         <Grid Background="#FF2C2C2C" Margin="10">
-            <Controls:TitleBar x:Name="TitleBar" VerticalAlignment="Top"/>
+            <Controls:TitleBar x:Name="TitleBar" VerticalAlignment="Top" Title="{Binding Source={x:Static core:Configuration.TITLE}}" />
             <materialDesign:DialogHost
             Identifier="RootDialog"
             DialogTheme="Inherit"
@@ -43,45 +44,44 @@
                 <materialDesign:DrawerHost
                 IsLeftDrawerOpen="{Binding IsChecked, ElementName=MenuToggleButton}">
                     <materialDesign:DrawerHost.LeftDrawerContent>
-                        <DockPanel MinWidth="400">
+                        <DockPanel MinWidth="350" Background="#FF2C2C2C">
                             <ToggleButton 
                         Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
                         DockPanel.Dock="Top"
                         HorizontalAlignment="Right" 
                         Margin="16"
                         IsChecked="{Binding IsChecked, ElementName=MenuToggleButton, Mode=TwoWay}"/>
-                            <TextBox 
-                        x:Name="DemoItemsSearchBox"
-                        Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                        DockPanel.Dock="Top"
-                        Margin="16, 4"
-                        Width="325"
-                        materialDesign:HintAssist.Hint="Search"
-                        materialDesign:HintAssist.IsFloating="True"
-                        materialDesign:TextFieldAssist.HasClearButton="True"
-                        materialDesign:TextFieldAssist.HasOutlinedTextField="True"
-                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                        materialDesign:TextFieldAssist.TextFieldCornerRadius="4"/>
-                            <ListBox 
-                        x:Name="DemoItemsListBox" 
-                        Margin="0 16 0 16"
-                        SelectedIndex="{Binding SelectedIndex}"
-                        SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
-                        ItemsSource="{Binding DemoItems}"
-                        AutomationProperties.Name="DemoPagesListBox"
-                        >
-                                <ListBox.Resources>
-                                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}"/>
-                                </ListBox.Resources>
-                                <ListBox.Style>
-                                    <StaticResource ResourceKey="MaterialDesignNavigationPrimaryListBox"/>
-                                </ListBox.Style>
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate DataType="domain:DemoItem">
-                                        <TextBlock Text="{Binding Name}" Margin="24 4 0 4" AutomationProperties.AutomationId="DemoItemPage"/>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            <Grid>
+                                <Grid Height="100" VerticalAlignment="Top">
+                                    <!--<materialDesign:Chip
+                                            Content="{Binding Source={x:Static core:Configuration.Username}}" Margin="10,0,10,0" Height="100" Cursor="Hand" HorizontalAlignment="Stretch">
+                                        <materialDesign:Chip.Icon>
+                                            <Image x:Name="UserProfileImage"/>
+                                        </materialDesign:Chip.Icon>
+                                    </materialDesign:Chip>-->
+                                    <materialDesign:Card Margin="20,0" Background="#FF252525">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Grid.Column="0" Margin="10,10,10,10">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush x:Name="UserProfileImageBrush"/>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                            <Image Grid.Column="0" />
+                                            <Grid Grid.Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="60"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Foreground="White" Grid.Row="0" Content="{Binding Source={x:Static core:Configuration.Username}}" FontSize="25" Margin="10,10,10,10"/>
+                                            </Grid>
+                                        </Grid>
+                                    </materialDesign:Card>
+                                </Grid>
+                            </Grid>
                         </DockPanel>
                     </materialDesign:DrawerHost.LeftDrawerContent>
                     <Grid>
@@ -95,7 +95,7 @@
                             Padding="16"
                             materialDesign:ShadowAssist.ShadowDepth="Depth2"
                             DockPanel.Dock="Top" Mode="PrimaryMid">
-                                <DockPanel>
+                                <Grid>
                                     <StackPanel Orientation="Horizontal">
                                         <ToggleButton
                                         x:Name="MenuToggleButton"
@@ -103,12 +103,18 @@
                                         IsChecked="False"
                                         AutomationProperties.Name="HamburgerToggleButton" Click="MenuToggleButton_Click"/>
                                     </StackPanel>
-                                    <TextBlock
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    FontSize="22"
-                                    Margin="10,0,0,0"
-                                    Text="Contacts"/>
+                                    <TextBox 
+                                        x:Name="ContactsSearchBox"
+                                        Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                                        VerticalAlignment="Center"
+                                        Margin="50,0,50,0"
+                                        Width="{Binding Width, RelativeSource={RelativeSource AncestorType=DockPanel}}"
+                                        materialDesign:HintAssist.Hint="Search"
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        materialDesign:TextFieldAssist.HasClearButton="True"
+                                        materialDesign:TextFieldAssist.HasOutlinedTextField="True"
+                                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                        materialDesign:TextFieldAssist.TextFieldCornerRadius="4" Cursor="IBeam" FontSize="15"/>
                                     <materialDesign:PopupBox StaysOpen="False" PlacementMode="BottomAndAlignRightEdges" HorizontalAlignment="Right"  Margin="0,0,0,0">
                                         <StackPanel>
                                             <Grid Margin="10">
@@ -140,7 +146,7 @@
                                     Content="Exit"/>
                                         </StackPanel>
                                     </materialDesign:PopupBox>
-                                </DockPanel>
+                                </Grid>
                             </materialDesign:ColorZone>
                             <Grid>
                                 <Grid.RowDefinitions>

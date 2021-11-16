@@ -13,16 +13,15 @@ namespace QhitChat_Client.Windows
     {
         public LoginWindow()
         {
-            // Subscribe to network connection events.
-            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
-            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcConnected;
-
+            DataContext = Core.Configuration.Instance;
             InitializeComponent();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            TitleBar.Title = Core.Configuration.TITLE;
+            // Subscribe to network connection events.
+            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
+            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcConnected;
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -51,6 +50,8 @@ namespace QhitChat_Client.Windows
                 if (!token.StartsWith(Core.CodeDefinition.ErrorPrefix))
                 {
                     // Login success.
+                    Core.Configuration.Token = token;
+                    Core.Configuration.Username = await Core.API.Authentication.GetUsernameAsync(Core.Configuration.Account);
                     new MainWindow().Show();
                     Close();
                     return;

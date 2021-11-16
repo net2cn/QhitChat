@@ -1,6 +1,8 @@
 ﻿using StreamJsonRpc;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
@@ -178,14 +180,19 @@ namespace QhitChat_Client.Core
             return sslStream;
         }
 
+        private GZipStream WrapGZipStream(Stream stream, CompressionMode compressionMode)
+        {
+            return new GZipStream(stream, compressionMode, false);
+        }
+
         private async Task ConnectRpcServerAsync()
         {
             try
             {
-                using (var stream = WrapSslStreamAsClient(client))
+                using (var sslStream = WrapSslStreamAsClient(client))
                 {
-                    var messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
-                    var messageHandler = new LengthHeaderMessageHandler(stream, stream, messageFormatter);
+                    MessagePackFormatter messageFormatter = new MessagePackFormatter();
+                    var messageHandler = new LengthHeaderMessageHandler(sslStream, sslStream, messageFormatter);
                     remote = new JsonRpc(messageHandler);
                     remote.StartListening();
                     await remote.Completion;

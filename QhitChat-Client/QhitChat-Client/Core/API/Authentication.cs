@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace QhitChat_Client.Core.API
 {
@@ -12,6 +13,11 @@ namespace QhitChat_Client.Core.API
         public static async Task<string> GetSaltAsync(string account)
         {
             return await Configuration.Network.InvokeAsync<string>("Authentication/GetSalt", account);
+        }
+
+        public static async Task<string> GetUsernameAsync(string account)
+        {
+            return await Configuration.Network.InvokeAsync<string>("Authentication/GetUsername", account);
         }
     }
 }

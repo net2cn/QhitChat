@@ -40,5 +40,18 @@ namespace QhitChat_Server.API
             }
             return null;
         }
+
+        [JsonRpcMethod("Authentication/GetUsername")]
+        public string GetUsername(string account)
+        {
+            var user = (from u in Presistent.Presistent.DatabaseContext.User
+                        where u.Account == account
+                        select u).SingleOrDefault();
+            if (user != null)
+            {
+                return user.Username;
+            }
+            return null;
+        }
     }
 }

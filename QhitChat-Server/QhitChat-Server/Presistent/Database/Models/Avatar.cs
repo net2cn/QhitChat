@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace QhitChat_Server.Presistent.Database.Models
 {
-    public class Relationship
+    public class Avatar
     {
         [Key, Required, StringLength(10, MinimumLength = 1)]
-        public string From { get; set; }
+        public string Account { get; set; }
 
         [Required, StringLength(10, MinimumLength = 1)]
-        public string To { get; set; }
+        public string Path { get; set; }
     }
 }

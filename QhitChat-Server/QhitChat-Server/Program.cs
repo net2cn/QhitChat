@@ -34,9 +34,9 @@ class Program
             {
                 var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
                 var worker = new Worker(client, true);
-                _ = Task.Run(worker.WorkAsync);
+                await Task.Run(worker.WorkAsync);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.Error.WriteLineAsync(e.Message);
                 Console.Error.WriteLineAsync(e.StackTrace);
@@ -45,5 +45,4 @@ class Program
 
         return 0;
     }
-
 }

@@ -6,8 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using NSec.Cryptography;
 using StreamJsonRpc;
+using QhitChat_Server.API;
+using System.Reflection;
+using Microsoft.VisualBasic.CompilerServices;
 
-namespace QhitChat_Server.API
+namespace QhitChat_Server.Core
 {
     class Controller
     {
@@ -16,10 +19,11 @@ namespace QhitChat_Server.API
         public Controller(JsonRpc client)
         {
             _client = client;
-            
-            // Register API here.
-            client.AddLocalRpcTarget(new Authentication());
-            client.AddLocalRpcTarget(new Relationship());
+
+            foreach(var member in GetTypesFromNamespace(Assembly.GetExecutingAssembly(), "QhitChat_Server.API"))
+            {
+                client.AddLocalRpcTarget(Activator.CreateInstance(member));
+            }
         }
 
         public string Ping()
@@ -34,9 +38,11 @@ namespace QhitChat_Server.API
             return "Pong from server";
         }
 
-        public void Test()
+        public static IEnumerable<Type> GetTypesFromNamespace(Assembly assembly,
+                                                       string desiredNamepace)
         {
-            Console.Error.WriteLineAsync("Recieved.");
+            return assembly.GetTypes()
+                           .Where(type => type.Namespace == desiredNamepace);
         }
     }
 }

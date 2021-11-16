@@ -7,6 +7,8 @@ using System.Text;
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.IO.Compression;
+using Nerdbank.Streams;
 
 namespace QhitChat_Server
 {
@@ -15,8 +17,6 @@ namespace QhitChat_Server
         TcpClient _client;
         bool _ownsClient;
         int _id;
-
-        JsonMessageFormatter messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
 
         public Worker(TcpClient client, bool ownsClient)
         {
@@ -29,13 +29,9 @@ namespace QhitChat_Server
         {
             try
             {
-                using (var stream = WrapSslStreamAsServer(_client))
+                using (var sslStream = WrapSslStreamAsServer(_client))
                 {
-                    //using (StreamWriter sw = new StreamWriter(stream))
-                    //{
-                    //    sw.WriteLineAsync("WTF?");
-                    //}
-                    await RespondToRpcRequestsAsync(stream);
+                    await RespondToRpcRequestsAsync(sslStream, sslStream);
                 }
             }
             finally
@@ -80,8 +76,14 @@ namespace QhitChat_Server
                 // the sslStream.
                 sslStream.Close();
                 client.Close();
+                throw;
             }
             return sslStream;
+        }
+
+        private GZipStream WrapGZipStream(Stream stream, CompressionMode compressionMode)
+        {
+            return new GZipStream(stream, compressionMode, true);
         }
 
         private void DisplaySecurityLevel(SslStream stream)
@@ -102,6 +104,7 @@ namespace QhitChat_Server
             Console.Error.WriteLineAsync($"Can read: {stream.CanRead}, write {stream.CanWrite}");
             Console.Error.WriteLineAsync($"Can timeout: {stream.CanTimeout}");
         }
+
         private void DisplayCertificateInformation(SslStream stream)
         {
             Console.Error.WriteLineAsync($"Certificate revocation list checked: {stream.CheckCertRevocationStatus}");
@@ -127,25 +130,31 @@ namespace QhitChat_Server
             }
         }
 
-        private async Task RespondToRpcRequestsAsync(Stream stream)
+        private async Task RespondToRpcRequestsAsync(Stream sendingStream, Stream receivingStream)
         {
             await Console.Error.WriteLineAsync($"Connection request #{_id} received. Spinning off an async Task to cater to requests.");
-            var messageHandler = new LengthHeaderMessageHandler(stream, stream, messageFormatter);
+            MessagePackFormatter messageFormatter = new MessagePackFormatter();
+            var messageHandler = new LengthHeaderMessageHandler(sendingStream, receivingStream, messageFormatter);
             try
             {
                 using (var jsonRpc = new JsonRpc(messageHandler))
                 {
-                    jsonRpc.AddLocalRpcTarget(new API.Controller(jsonRpc));
+                    jsonRpc.AddLocalRpcTarget(new Core.Controller(jsonRpc));
                     Console.Error.WriteLineAsync($"JSON-RPC listener attached to #{_id}. Waiting for requests...");
                     jsonRpc.StartListening();
                     await jsonRpc.Completion;
                     Console.Error.WriteLineAsync($"Connection #{_id} terminated normally.");
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.Error.WriteLineAsync($"Connection #{_id} terminated: {ex.Message}");
+                Console.Error.WriteLineAsync($"Connection #{_id} terminated: {e.Message}");
             }
         }
+    }
+
+    public class CompressJsonMessageFormatter : JsonMessageFormatter
+    {
+
     }
 }

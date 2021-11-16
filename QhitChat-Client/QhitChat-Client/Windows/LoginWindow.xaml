@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QhitChat_Client.Windows"
+        xmlns:core="clr-namespace:QhitChat_Client.Core"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:Controls="clr-namespace:QhitChat_Client.Windows.Controls" x:Class="QhitChat_Client.Windows.LoginWindow"
@@ -33,14 +34,13 @@
                 Color="Gray" />
         </Border.Effect>
         <Grid Background="#FF2C2C2C" Margin="10">
-            <Controls:TitleBar x:Name="TitleBar" VerticalAlignment="Top" Title="QhitChat" ControlMode="Minimize"/>
+            <Controls:TitleBar x:Name="TitleBar" VerticalAlignment="Top" Title="{Binding Source={x:Static core:Configuration.TITLE}}" ControlMode="Minimize"/>
             <materialDesign:DialogHost
             Identifier="RootDialog"
             DialogTheme="Inherit"
             SnackbarMessageQueue="{Binding MessageQueue, ElementName=MainSnackbar}"
             Margin="0,30,0,0">
-                <materialDesign:DrawerHost
-                IsLeftDrawerOpen="{Binding IsChecked, ElementName=MenuToggleButton}">
+                <materialDesign:DrawerHost>
                     <Grid Background="#FF2D2D2D">
                         <Rectangle Fill="Gray">
                             <Rectangle.OpacityMask>
