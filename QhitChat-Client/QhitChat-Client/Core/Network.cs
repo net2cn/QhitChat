@@ -55,22 +55,29 @@ namespace QhitChat_Client.Core
         /// <param name="address"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public async Task ConnectAsync(string address, int port)
+        public async Task<bool> ConnectAsync(string address, int port)
         {
-            try
+            while (true)
             {
-                await TcpConnectToServerAsync(address, port);
-                await ConnectRpcServer();
-            }
-            catch
-            {
-                if (remote == null)
+                if (client == null || !client.Connected)
                 {
-                    // Retry after 3000ms
-                    await Task.Delay(3000);
-                    await ConnectAsync(address, port);
+                    Trace.WriteLine("Connecting...");
+                    await TcpConnectToServerAsync(address, port);
+                }
+                else
+                {
+                    if (remote == null)
+                    {
+                        ConnectRpcServerAsync();
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
+
+            return true;
         }
 
         /// <summary>
@@ -81,26 +88,35 @@ namespace QhitChat_Client.Core
         /// <returns></returns>
         private async Task TcpConnectToServerAsync(string address, int port)
         {
-            // TODO: fix tcp connection is made twice when reconnecting.
-            if (client != null && client.Connected!=true)
+            while (true)
             {
-                client.Close();
-                client = null;
-            }
+                if(client == null)
+                {
+                    // Create a TCP/IP client socket.
+                    client = new TcpClient();
+                }
 
-            client = new TcpClient();
-
-            try
-            {
-                // Create a TCP/IP client socket.
-                await client.ConnectAsync(address, port);
+                if (!client.Connected)
+                {
+                    try
+                    {
+                        await client.ConnectAsync(address, port);
+                        Trace.WriteLine("Client connected.");
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.WriteLine($"No TCP connection was made to the server: {e.Message}");
+                        await Task.Delay(3000); // Retry after 3000ms;
+                        if (client != null && !client.Connected)    // Prevent connected client from being disposed.
+                        {
+                            client.Close();
+                            (client as IDisposable).Dispose();
+                            client = null;
+                        }
+                    }
+                }
             }
-            catch (Exception e)
-            {
-                Trace.WriteLine($"No TCP connection was made to the server: {e.Message}");
-                throw;
-            }
-            Trace.WriteLine("Client connected.");
         }
 
         /// <summary>
@@ -151,51 +167,42 @@ namespace QhitChat_Client.Core
             }
             catch (Exception e)
             {
-                Trace.WriteLine($"Exception: {e.Message}");
+                Trace.WriteLine($"Unable to perform TLS handshake: {e.Message}");
                 if (e.InnerException != null)
                 {
-                    Trace.WriteLine($"Inner exception: {e.InnerException.Message}");
+                    Trace.WriteLine($"With inner exception: {e.InnerException.Message}");
                 }
-                Trace.WriteLine("Authentication failed - closing the connection.");
-                client.Close();
                 throw;
             }
             Trace.WriteLine("SslStream Established.");
             return sslStream;
         }
 
-        private async Task ConnectRpcServer()
+        private async Task ConnectRpcServerAsync()
         {
-            if (client != null || client.Connected == true)
+            try
             {
-                try
+                using (var stream = WrapSslStreamAsClient(client))
                 {
-                    using (var stream = WrapSslStreamAsClient(client))
-                    {
-                        var messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
-                        var messageHandler = new LengthHeaderMessageHandler(stream, stream, messageFormatter);
-                        remote = new JsonRpc(messageHandler);
-                        remote.StartListening();
-                        await remote.Completion;
-                    }
-                }
-                catch (Exception e)
-                {
-                    Trace.WriteLine($"Failed to create JSON-RPC instance: {e.Message}");
-                    throw;
-                }
-                finally
-                {
-                    if (remote != null)
-                    {
-                        (remote as IDisposable).Dispose();
-                        remote = null;
-                    }
+                    var messageFormatter = new JsonMessageFormatter(Encoding.UTF8);
+                    var messageHandler = new LengthHeaderMessageHandler(stream, stream, messageFormatter);
+                    remote = new JsonRpc(messageHandler);
+                    remote.StartListening();
+                    await remote.Completion;
                 }
             }
-            else
+            catch (Exception e)
             {
-                throw new SocketException((int)SocketError.NotConnected);
+                Trace.WriteLine($"Unable to create JSON-RPC instance: {e.Message}");
+            }
+            finally
+            {
+                if (remote != null)
+                {
+                    (remote as IDisposable).Dispose();
+                    remote = null;
+                }
+                    
             }
         }
 
@@ -208,15 +215,6 @@ namespace QhitChat_Client.Core
             {
                 if (remote != null)
                 {
-                    return await remote.InvokeAsync<T>(targetName, arguments);
-                }
-                else
-                {
-                    await ConnectAsync(address, port);
-                    if (remote == null)
-                    {
-                        throw new SocketException();
-                    }
                     return await remote.InvokeAsync<T>(targetName, arguments);
                 }
             }
