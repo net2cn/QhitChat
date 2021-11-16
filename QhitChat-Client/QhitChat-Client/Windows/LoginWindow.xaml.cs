@@ -13,8 +13,10 @@ namespace QhitChat_Client.Windows
     {
         public LoginWindow()
         {
+            // Subscribe to network connection events.
             Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
             Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcConnected;
+
             InitializeComponent();
         }
 
@@ -111,6 +113,13 @@ namespace QhitChat_Client.Windows
                 NotificationLabel.Content = "Connected.";
                 NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
             }
+        }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            // Subscribe to network connection events to prevent leaking.
+            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcDisconnected;
+            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcConnected;
         }
     }
 }

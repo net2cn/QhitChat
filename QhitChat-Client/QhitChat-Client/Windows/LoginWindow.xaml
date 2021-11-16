@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="QhitChat" Height="380" Width="620" ResizeMode="NoResize" Loaded="Window_Loaded"
         Background="{x:Null}" WindowStartupLocation="CenterScreen"
-        WindowStyle="None" AllowsTransparency="True">
+        WindowStyle="None" AllowsTransparency="True" Unloaded="Window_Unloaded">
     <Window.Resources>
         <Style x:Key="Flat">
             <Setter Property="Control.Background" Value="{x:Null}" />
