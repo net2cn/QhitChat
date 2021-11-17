@@ -32,11 +32,39 @@ namespace QhitChat_Server.Presistent.Filesystem
 
         public static bool Exists(string path)
         {
-            if (File.Exists(path))
+            if (System.IO.File.Exists(path))
             {
                 return true;
             }
             return false;
+        }
+
+        public static void CreateEmptyFile(string path, long fileSize)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                fs.SetLength(fileSize);
+            }
+        }
+
+        public static void SaveFileByChunckNumber(string path, byte[] chunck, int chunckNo)
+        {
+            if (!Exists(path))
+            {
+                return;
+            }
+
+            using (BinaryWriter writer = new BinaryWriter(new FileStream(path, FileMode.Open)))
+            {
+                long readSize = ChunckSize;
+                if (chunckNo * ChunckSize + ChunckSize > writer.BaseStream.Length)
+                {
+                    readSize = writer.BaseStream.Length - (chunckNo * ChunckSize);
+                }
+                writer.BaseStream.Seek(chunckNo * ChunckSize, SeekOrigin.Begin);
+                writer.Write(chunck);
+            }
         }
     }
 }

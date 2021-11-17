@@ -46,11 +46,12 @@
                     <materialDesign:DrawerHost.LeftDrawerContent>
                         <DockPanel MinWidth="350" Background="#FF2C2C2C">
                             <ToggleButton 
-                        Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
-                        DockPanel.Dock="Top"
-                        HorizontalAlignment="Right" 
-                        Margin="16"
-                        IsChecked="{Binding IsChecked, ElementName=MenuToggleButton, Mode=TwoWay}"/>
+                                Foreground="White"
+                                Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                                DockPanel.Dock="Top"
+                                HorizontalAlignment="Right" 
+                                Margin="16"
+                                IsChecked="{Binding IsChecked, ElementName=MenuToggleButton, Mode=TwoWay}"/>
                             <Grid>
                                 <Grid Height="100" VerticalAlignment="Top">
                                     <!--<materialDesign:Chip

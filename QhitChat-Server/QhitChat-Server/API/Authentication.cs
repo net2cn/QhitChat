@@ -19,7 +19,7 @@ namespace QhitChat_Server.API
 
             if (user.Password == password)
             {
-                if (user.Status != 0)
+                if (user.Status != 1)
                 {
                     var token = Core.Authentication.GenerateToken();
                     user.Token = token;
