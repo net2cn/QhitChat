@@ -2,10 +2,8 @@ name: CI
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-
+  schedule:
+    - cron: "0 0 * * *"	    # Runs at UTC 0:00, which is BJT 8:00
 env:
   client_solution: QhitChat-Client/QhitChat-Client.sln
   server_solution: QhitChat-Server/QhitChat-Server.sln
