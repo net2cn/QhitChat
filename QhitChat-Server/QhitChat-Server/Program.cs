@@ -36,7 +36,7 @@ class Program
         {
             try
             {
-                var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
+                var client = await server.AcceptTcpClientAsync();
                 var worker = new Worker(client, true);
                 Task.Run(worker.WorkAsync);
             }

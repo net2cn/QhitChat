@@ -135,11 +135,14 @@ namespace QhitChat_Server
             await Console.Error.WriteLineAsync($"Connection request #{_id} received. Spinning off an async Task to cater to requests.");
             MessagePackFormatter messageFormatter = new MessagePackFormatter();
             var messageHandler = new LengthHeaderMessageHandler(sendingStream, receivingStream, messageFormatter);
+            Core.Controller controller = null;
+
             try
             {
                 using (var jsonRpc = new JsonRpc(messageHandler))
                 {
-                    jsonRpc.AddLocalRpcTarget(new Core.Controller(jsonRpc));
+                    controller = new Core.Controller(jsonRpc);
+                    jsonRpc.AddLocalRpcTarget(controller);
                     Console.Error.WriteLineAsync($"JSON-RPC listener attached to #{_id}. Waiting for requests...");
                     jsonRpc.StartListening();
                     await jsonRpc.Completion;
@@ -149,6 +152,10 @@ namespace QhitChat_Server
             catch (Exception e)
             {
                 Console.Error.WriteLineAsync($"Connection #{_id} terminated: {e.Message}");
+            }
+            finally
+            {
+                controller.OnDisconnected();
             }
         }
     }

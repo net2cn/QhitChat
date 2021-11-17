@@ -14,15 +14,17 @@ namespace QhitChat_Server.Core
 {
     class Controller
     {
-        JsonRpc _client;
+        public Dictionary<Type, object> API = new Dictionary<Type, object>();
+        JsonRpc Remote;
 
-        public Controller(JsonRpc client)
+        public Controller(JsonRpc remote)
         {
-            _client = client;
+            Remote = remote;
 
             foreach(var member in GetTypesFromNamespace(Assembly.GetExecutingAssembly(), "QhitChat_Server.API"))
             {
-                client.AddLocalRpcTarget(Activator.CreateInstance(member));
+                API.Add(member, Activator.CreateInstance(member));
+                remote.AddLocalRpcTarget(API[member]);
             }
         }
 
@@ -33,16 +35,24 @@ namespace QhitChat_Server.Core
 
         public async Task<string> PingPong()
         {
-            string s = await _client.InvokeAsync<string>("ping_pong");
+            string s = await Remote.InvokeAsync<string>("ping_pong");
             Console.Error.WriteLineAsync(s);
             return "Pong from server";
         }
 
-        public static IEnumerable<Type> GetTypesFromNamespace(Assembly assembly,
-                                                       string desiredNamepace)
+        public static IEnumerable<Type> GetTypesFromNamespace(Assembly assembly, string desiredNamepace)
         {
             return assembly.GetTypes()
                            .Where(type => type.Namespace == desiredNamepace);
+        }
+
+        public void OnDisconnected()
+        {
+            // Log user out if disconnected.
+            var authentication = (API.Authentication)(API[typeof(API.Authentication)]);
+            authentication.Logout(authentication.Account, authentication.Token);
+
+            ((IDisposable)this).Dispose();
         }
     }
 }
