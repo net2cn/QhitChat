@@ -76,7 +76,7 @@ namespace QhitChat_Client.Windows
             }
 
             UsernameTextBox.Text = Core.Configuration.Username;
-            UserProfileImageBrush.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
+            UserAvatarImageBrush.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
         }
 
         private async Task<string> GetUserProfileImageAsync(string account)

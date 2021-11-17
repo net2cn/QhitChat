@@ -60,19 +60,21 @@
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Ellipse Grid.Column="0" Margin="10,10,10,10">
-                                                <Ellipse.Fill>
-                                                    <ImageBrush x:Name="UserProfileImageBrush"/>
-                                                </Ellipse.Fill>
-                                            </Ellipse>
-                                            <Image Grid.Column="0" />
+                                            <Grid x:Name="UserAvatarGrid" Grid.Column="0" Margin="0,0,0,0">
+                                                <materialDesign:PackIcon Grid.Column="0" Kind="AccountCircle" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" Height="{Binding Height, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"/>
+                                                <Ellipse Grid.Column="0" Margin="8,8,8,8">
+                                                    <Ellipse.Fill>
+                                                        <ImageBrush x:Name="UserAvatarImageBrush"/>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                            </Grid>
                                             <Grid Grid.Column="1">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="60"/>
                                                     <RowDefinition Height="*"/>
                                                 </Grid.RowDefinitions>
                                                 <TextBox x:Name="UsernameTextBox" Foreground="White" Grid.Row="0" FontSize="25" Margin="10,10,10,10" LostFocus="UsernameTextBox_LostFocus" Cursor="IBeam" MaxLines="1" MaxLength="32"/>
-                                                <Label Grid.Row="1" Foreground="Gray" FontSize="15" Content="{Binding Source={x:Static core:Configuration.Account}}" ContentStringFormat="@{0}"/>
+                                                <Label Grid.Row="1" Margin="6,0" Foreground="Gray" FontSize="15" Content="{Binding Source={x:Static core:Configuration.Account}}" ContentStringFormat="@{0}"/>
                                             </Grid>
                                         </Grid>
                                     </materialDesign:Card>
