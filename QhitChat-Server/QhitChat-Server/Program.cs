@@ -14,18 +14,22 @@ class Program
 {
     public static void Main(string[] args)
     {
-        MainAsync(args).GetAwaiter().GetResult();
+        MainAsync(args).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
     static async Task<int> MainAsync(string[] args)
     {
         var port = 23340;
+#if DEBUG
         IPAddress localAddress = IPAddress.Parse("127.0.0.1");
+#else
+        IPAddress localAddress = IPAddress.Parse("0.0.0.0");
+#endif
 
         // Initialize presistent infrastructure.
         _ = Presistent.Instance;
 
-        Console.WriteLine($"Start lisening {localAddress}:{port}.");
+        Console.WriteLine($"Start listening on {localAddress}:{port}.");
         var server = new TcpListener(localAddress, port);
         server.Start();
         while (true)
@@ -34,7 +38,7 @@ class Program
             {
                 var client = await server.AcceptTcpClientAsync().ConfigureAwait(false);
                 var worker = new Worker(client, true);
-                await Task.Run(worker.WorkAsync);
+                Task.Run(worker.WorkAsync);
             }
             catch (Exception e)
             {

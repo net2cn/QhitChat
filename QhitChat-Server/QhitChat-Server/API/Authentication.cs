@@ -19,11 +19,18 @@ namespace QhitChat_Server.API
 
             if (user.Password == password)
             {
-                var token = Core.Authentication.GenerateToken();
-                user.Token = token;
-                user.Status = 1;
-                Presistent.Presistent.DatabaseContext.SaveChanges();
-                return token;
+                if (user.Status != 0)
+                {
+                    var token = Core.Authentication.GenerateToken();
+                    user.Token = token;
+                    user.Status = 1;
+                    Presistent.Presistent.DatabaseContext.SaveChanges();
+                    return token;
+                }
+                else
+                {
+                    return user.Token;
+                }
             }
             return Core.CodeDefinition.Authentication.WrongPassword;
         }
