@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace QhitChat_Client.Presistent.Filesystem
 {
@@ -12,6 +14,17 @@ namespace QhitChat_Client.Presistent.Filesystem
         public static int GetChunkCount(string path)
         {
             return (int)(new FileInfo(path).Length / ChunckSize);
+        }
+
+        public static async Task<string> ReadLineAsync(string path, int index)
+        {
+            return (await File.ReadAllLinesAsync(path)).Skip(index - 1).Take(1).First();
+        }
+
+        public static void WriteLine(string path, string content)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            File.AppendAllText(path, content+Environment.NewLine);
         }
 
         public static byte[] GetFileChunckByChunckNumber(string path, int chunckNo)

@@ -9,13 +9,18 @@ namespace QhitChat_Server.Presistent.Filesystem
     {
         public static int ChunckSize = 4 * 1024 * 1024;
 
-        public static int GetChunkCount(string path)
+        public static uint GetChunkCount(string path)
         {
-            return (int)(new FileInfo(path).Length / ChunckSize);
+            return (uint)(new FileInfo(path).Length / ChunckSize);
         }
 
-        public static byte[] GetFileChunckByChunckNumber(string path, int chunckNo)
+        public static byte[] GetFileChunckByChunckNumber(string path, uint chunckNo)
         {
+            if(!Exists(path) || chunckNo > GetChunkCount(path) - 1)
+            {
+                return null;
+            }
+
             using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open)))
             {
                 long readSize = ChunckSize;
@@ -30,6 +35,11 @@ namespace QhitChat_Server.Presistent.Filesystem
             }
         }
 
+        /// <summary>
+        /// Check whether a file exists in filesystem.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static bool Exists(string path)
         {
             if (System.IO.File.Exists(path))
@@ -39,6 +49,21 @@ namespace QhitChat_Server.Presistent.Filesystem
             return false;
         }
 
+        /// <summary>
+        /// Return file name with extension from a given path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetFilenameFromPath(string path)
+        {
+            return Path.GetFileName(path);
+        }
+
+        /// <summary>
+        /// Create a empty file to write.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="fileSize"></param>
         public static void CreateEmptyFile(string path, long fileSize)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -48,9 +73,15 @@ namespace QhitChat_Server.Presistent.Filesystem
             }
         }
 
-        public static void SaveFileByChunckNumber(string path, byte[] chunck, int chunckNo)
+        /// <summary>
+        /// Save a chunck of file to file with chunkNo.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="chunck"></param>
+        /// <param name="chunckNo"></param>
+        public static void SaveFileByChunckNumber(string path, byte[] chunck, uint chunckNo)
         {
-            if (!Exists(path))
+            if (!Exists(path) || chunckNo>GetChunkCount(path)-1)
             {
                 return;
             }

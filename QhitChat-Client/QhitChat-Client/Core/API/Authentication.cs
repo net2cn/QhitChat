@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace QhitChat_Client.Core.API
@@ -18,6 +19,16 @@ namespace QhitChat_Client.Core.API
         public static async Task<string> GetUsernameAsync(string account)
         {
             return await Configuration.Network.InvokeAsync<string>("Authentication/GetUsername", account);
+        }
+
+        public static async Task<Dictionary<string, string>> FindUserAsync(string account)
+        {
+            return await Configuration.Network.InvokeAsync<Dictionary<string, string>>("Authentication/FindUser", account);
+        }
+
+        public static async Task<bool> ChangeUsernameAsync(string account, string token, string newUsername)
+        {
+            return await Configuration.Network.InvokeAsync<bool>("Authentication/ChangeUsername", account, token, newUsername);
         }
     }
 }

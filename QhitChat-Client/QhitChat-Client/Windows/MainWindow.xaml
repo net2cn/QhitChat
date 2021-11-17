@@ -54,12 +54,6 @@
                                 IsChecked="{Binding IsChecked, ElementName=MenuToggleButton, Mode=TwoWay}"/>
                             <Grid>
                                 <Grid Height="100" VerticalAlignment="Top">
-                                    <!--<materialDesign:Chip
-                                            Content="{Binding Source={x:Static core:Configuration.Username}}" Margin="10,0,10,0" Height="100" Cursor="Hand" HorizontalAlignment="Stretch">
-                                        <materialDesign:Chip.Icon>
-                                            <Image x:Name="UserProfileImage"/>
-                                        </materialDesign:Chip.Icon>
-                                    </materialDesign:Chip>-->
                                     <materialDesign:Card Margin="20,0" Background="#FF252525">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -77,7 +71,8 @@
                                                     <RowDefinition Height="60"/>
                                                     <RowDefinition Height="*"/>
                                                 </Grid.RowDefinitions>
-                                                <Label Foreground="White" Grid.Row="0" Content="{Binding Source={x:Static core:Configuration.Username}}" FontSize="25" Margin="10,10,10,10"/>
+                                                <TextBox x:Name="UsernameTextBox" Foreground="White" Grid.Row="0" FontSize="25" Margin="10,10,10,10" LostFocus="UsernameTextBox_LostFocus" Cursor="IBeam" MaxLines="1" MaxLength="32"/>
+                                                <Label Grid.Row="1" Foreground="Gray" FontSize="15" Content="{Binding Source={x:Static core:Configuration.Account}}" ContentStringFormat="@{0}"/>
                                             </Grid>
                                         </Grid>
                                     </materialDesign:Card>
@@ -91,6 +86,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="500*" MinWidth="500"/>
                         </Grid.ColumnDefinitions>
+                        <materialDesign:Snackbar
+                                    x:Name="MainSnackbar"
+                                    MessageQueue="{materialDesign:MessageQueue}"/>
                         <DockPanel>
                             <materialDesign:ColorZone
                             Padding="16"
@@ -115,7 +113,7 @@
                                         materialDesign:TextFieldAssist.HasClearButton="True"
                                         materialDesign:TextFieldAssist.HasOutlinedTextField="True"
                                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                                        materialDesign:TextFieldAssist.TextFieldCornerRadius="4" Cursor="IBeam" FontSize="15"/>
+                                        materialDesign:TextFieldAssist.TextFieldCornerRadius="4" Cursor="IBeam" FontSize="15" LostFocus="ContactsSearchBox_LostFocus"/>
                                     <materialDesign:PopupBox StaysOpen="False" PlacementMode="BottomAndAlignRightEdges" HorizontalAlignment="Right"  Margin="0,0,0,0">
                                         <StackPanel>
                                             <Grid Margin="10">
@@ -165,10 +163,6 @@
                             Margin="{Binding MarginRequirement, FallbackValue=16}"
                             Content="{Binding Content, FallbackValue={x:Null}, UpdateSourceTrigger=PropertyChanged}"/>
                                 </ScrollViewer>
-                                <materialDesign:Snackbar
-                        x:Name="MainSnackbar"
-                        MessageQueue="{materialDesign:MessageQueue}"
-                        Grid.Row="1"/>
                             </Grid>
                         </DockPanel>
                         <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
