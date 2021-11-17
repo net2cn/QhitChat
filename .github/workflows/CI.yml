@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  client_solution: QhitChat-Client/QhitChat-Client.sln
+  server_solution: QhitChat-Server/QhitChat-Server.sln
+  client_bin: QhitChat-Client/QhitChat-Client/bin
+  server_bin: QhitChat-Server/QhitChat-Server/bin
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Debug'
+
+jobs:
+  build_client:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+
+    - name: Setup .NET Core 3.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: "3.1.x"
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.PAT}}
+
+    - name: Restore client dependencies
+      run: dotnet restore ${{ env.client_solution }}
+
+    - name: Build client
+      run: dotnet build ${{ env.client_solution }} --configuration ${{ env.buildConfiguration }} --no-restore -p:Platform="${{ env.buildPlatform }}" -p:MDIXVersion=${{ env.mdixVersion }}.${{ github.run_number }} -p:MDIXColorsVersion=${{ env.mdixColorsVersion }}.${{ github.run_number }} -p:MDIXMahAppsVersion=${{ env.mdixMahappsVersion }}.${{ github.run_number }}
+
+    - name: Upload client
+      uses: actions/upload-artifact@v2
+      with:
+        name: Client_Build-${{ steps.short-sha.outputs.sha }}
+        path: "${{ env.client_bin }}/${{ env.buildConfiguration }}"
+
+  build_server:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+
+    - name: Setup .NET Core 3.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: "3.1.x"
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.PAT}}
+
+    - name: Restore server dependencies
+      run: dotnet restore ${{ env.server_solution }}
+
+    - name: Build server
+      run: dotnet build ${{ env.server_solution }} --configuration ${{ env.buildConfiguration }} --no-restore -p:Platform="${{ env.buildPlatform }}" -p:MDIXVersion=${{ env.mdixVersion }}.${{ github.run_number }} -p:MDIXColorsVersion=${{ env.mdixColorsVersion }}.${{ github.run_number }} -p:MDIXMahAppsVersion=${{ env.mdixMahappsVersion }}.${{ github.run_number }}
+
+    - name: Upload server
+      uses: actions/upload-artifact@v2
+      with:
+        name: Server_Build-${{ steps.short-sha.outputs.sha }}
+        path: "${{ env.server_bin }}/${{ env.buildConfiguration }}"
