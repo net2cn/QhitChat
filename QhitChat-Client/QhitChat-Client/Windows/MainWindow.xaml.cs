@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -17,6 +18,9 @@ namespace QhitChat_Client.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<User> Users { get; set; }
+        public User SelectedUser { get; set; }
+
         private string avatarPath = "./cache/avatar.txt";
         private Dictionary<string, string> relationship;
 
@@ -24,13 +28,15 @@ namespace QhitChat_Client.Windows
         {
             SourceInitialized += Window_SourceInitialized;
             InitializeComponent();
+            DataContext = this;
+            Users = new ObservableCollection<User>();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             TitleBar.Title = Core.Configuration.TITLE;
-            relationship = await Core.API.Relationship.GetRelationshipAsync(Core.Configuration.Account, Core.Configuration.Token);
             UpdateUserProfileAsync();
+            UpdateContactsAsync();
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -77,6 +83,17 @@ namespace QhitChat_Client.Windows
 
             UsernameTextBox.Text = Core.Configuration.Username;
             UserAvatarImageBrush.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
+        }
+
+        private async Task UpdateContactsAsync()
+        {
+            relationship = await Core.API.Relationship.GetRelationshipAsync(Core.Configuration.Account, Core.Configuration.Token);
+
+            foreach(var i in relationship)
+            {
+                Users.Add(new User(i.Key, i.Value));
+                await Users.Last().GetUserProfileImageAsync();
+            }
         }
 
         private async Task<string> GetUserProfileImageAsync(string account)
@@ -134,6 +151,42 @@ namespace QhitChat_Client.Windows
         private void DisplayMessage(string message)
         {
             MainSnackbar.MessageQueue?.Enqueue(message);
+        }
+    }
+
+    public class User
+    {
+        public string Account { get; set; }
+        public string Username { get; set; }
+        public BitmapImage Avatar { get; set; }
+
+        public User(string account, string username)
+        {
+            Account = account;
+            Username = username;
+        }
+
+        public async Task GetUserProfileImageAsync()
+        {
+            var avatar = await Core.API.File.GetAvatarAsync(Account);
+            if (avatar != null)
+            {
+                var avatarFilename = avatar.First().Key;
+                var avatarFilepath = Path.Combine("./cache/avatars/", avatarFilename);
+                var avatarData = avatar.First().Value;
+                BitmapImage img = new BitmapImage();
+                using (MemoryStream memStream = new MemoryStream(avatarData))
+                {
+                    img.BeginInit();
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.StreamSource = memStream;
+                    img.EndInit();
+                    img.Freeze();
+                }
+                Filesystem.CreateEmptyFile(avatarFilepath, avatarData.Length);
+                Filesystem.SaveFileByChunckNumber(avatarFilepath, avatarData, 0);
+                Avatar = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
+            }
         }
     }
 }

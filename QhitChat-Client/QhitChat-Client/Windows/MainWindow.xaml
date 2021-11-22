@@ -62,7 +62,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Grid x:Name="UserAvatarGrid" Grid.Column="0" Margin="0,0,0,0">
                                                 <materialDesign:PackIcon Grid.Column="0" Kind="AccountCircle" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" Height="{Binding Height, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"/>
-                                                <Ellipse Grid.Column="0" Margin="8,8,8,8">
+                                                <Ellipse Grid.Column="0" Margin="7,7,7,7">
                                                     <Ellipse.Fill>
                                                         <ImageBrush x:Name="UserAvatarImageBrush"/>
                                                     </Ellipse.Fill>
@@ -154,17 +154,29 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <ScrollViewer
-                        x:Name="MainScrollViewer"
-                        Grid.Row="1"
-                        materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
-                        HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}"
-                        VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}" >
-                                    <ContentControl
-                            DataContext="{Binding SelectedItem}"
-                            Margin="{Binding MarginRequirement, FallbackValue=16}"
-                            Content="{Binding Content, FallbackValue={x:Null}, UpdateSourceTrigger=PropertyChanged}"/>
-                                </ScrollViewer>
+                                <ListBox ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser, RelativeSource={RelativeSource AncestorType=Window}}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid x:Name="UserAvatarGrid" Grid.Column="0" Margin="0,0,0,0">
+                                                        <materialDesign:PackIcon Grid.Column="0" Kind="AccountCircle" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" Height="{Binding Height, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"/>
+                                                        <Ellipse Grid.Column="0" Margin="7,7,7,7">
+                                                            <Ellipse.Fill>
+                                                                <ImageBrush ImageSource="{Binding Avatar}"/>
+                                                            </Ellipse.Fill>
+                                                        </Ellipse>
+                                                    </Grid>
+                                                    <TextBlock Grid.Column="2" Text="{Binding Username}" Margin="10" VerticalAlignment="Center" FontSize="22" Foreground="White"/>
+                                                </Grid>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </Grid>
                         </DockPanel>
                         <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>

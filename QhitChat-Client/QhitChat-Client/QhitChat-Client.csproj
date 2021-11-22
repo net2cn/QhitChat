@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+    <Page Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\pattern-1.svg" />
     <None Remove="Resources\pattern-10.svg" />
     <None Remove="Resources\pattern-11.svg" />
@@ -85,7 +92,6 @@
 
   <ItemGroup>
     <Folder Include="Certificate\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
