@@ -12,7 +12,7 @@ namespace QhitChat_Client.Core
 
         // Networking
 #if DEBUG
-        public const string HOSTNAME = "localhost";
+        public const string HOSTNAME = "loopback.plus1sec.tech";
 #else
         public const string HOSTNAME = "home.plus1sec.tech";
 #endif
