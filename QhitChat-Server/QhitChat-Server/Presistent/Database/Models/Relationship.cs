@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QhitChat_Server.Presistent.Database.Models
 {
     public class Relationship
     {
-        [Key, Required, StringLength(10, MinimumLength = 1)]
+        [Required]
         public string From { get; set; }
 
-        [Required, StringLength(10, MinimumLength = 1)]
+        [ForeignKey("From")]
+        public User User { get; set; }
+
+        [Required]
         public string To { get; set; }
     }
 }

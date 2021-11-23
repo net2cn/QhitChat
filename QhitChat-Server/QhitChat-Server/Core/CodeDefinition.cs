@@ -13,6 +13,7 @@ namespace QhitChat_Server.Core
             public static string Logged = $"{ErrorPrefix}Logged";
             public static string NoUser = $"{ErrorPrefix}No_User";
             public static string WrongPassword = $"{ErrorPrefix}Wrong_Password";
+            public static string WrongToken = $"{ErrorPrefix}Wrong_Token";
         }
     }
 }
