@@ -154,7 +154,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <ListBox ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser, RelativeSource={RelativeSource AncestorType=Window}}">
+                                <ListBox x:Name="ContactsListBox" ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser, RelativeSource={RelativeSource AncestorType=Window}}" SelectionChanged="ContactsListBox_SelectionChanged">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel>

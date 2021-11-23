@@ -34,6 +34,9 @@ namespace QhitChat_Client.Windows
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // Subscribe to network connection events.
+            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
+
             TitleBar.Title = Core.Configuration.TITLE;
             UpdateUserProfileAsync();
             UpdateContactsAsync();
@@ -148,9 +151,21 @@ namespace QhitChat_Client.Windows
             }
         }
 
+        private async void OnJsonRpcDisconnected(object sender, Core.NetworkEventArgs e)
+        {
+            DisplayMessage("网络连接已断开！应用程序将于5s后自动退出。");
+            await Task.Delay(5000);
+            Close();
+        }
+
         private void DisplayMessage(string message)
         {
             MainSnackbar.MessageQueue?.Enqueue(message);
+        }
+
+        private void ContactsListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            Trace.WriteLine(SelectedUser.Account);
         }
     }
 
@@ -168,6 +183,7 @@ namespace QhitChat_Client.Windows
 
         public async Task GetUserProfileImageAsync()
         {
+            // TODO: Add user avatar cache.
             var avatar = await Core.API.File.GetAvatarAsync(Account);
             if (avatar != null)
             {
