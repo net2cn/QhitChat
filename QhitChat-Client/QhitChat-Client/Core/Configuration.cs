@@ -25,6 +25,7 @@ namespace QhitChat_Client.Core
         public static string Password;
         public static string Username;
         public static string Token;
+
         private static readonly Lazy<Configuration> lazy =
             new Lazy<Configuration>(() => new Configuration());
 

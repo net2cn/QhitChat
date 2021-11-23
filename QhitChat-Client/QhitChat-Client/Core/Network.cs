@@ -140,7 +140,8 @@ namespace QhitChat_Client.Core
                 return true;
             }
             // Compare if remote public certificate the same as local certificate.
-            return new X509Certificate2(serverCertificate).Thumbprint == certificate.Thumbprint;
+            var serverCertificate2 = new X509Certificate2(serverCertificate);
+            return serverCertificate2.Thumbprint == certificate.Thumbprint && serverCertificate2.NotBefore > DateTime.Now && serverCertificate2.NotAfter < DateTime.Now;
         }
 
         /// <summary>
