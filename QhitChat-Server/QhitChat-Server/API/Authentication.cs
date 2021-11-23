@@ -93,17 +93,15 @@ namespace QhitChat_Server.API
         }
 
         [JsonRpcMethod("Authentication/FindUser")]
-        public Dictionary<string, string> FindUser(string account)
+        public Dictionary<string, string> FindUser(string account, int page)
         {
-            var users = (from u in Presistent.Presistent.DatabaseContext.User
-                        where u.Account.Contains(account) || u.Username.Contains(account)
-                        select u).ToDictionary(u=>u.Account, u=>u.Username);
+            var users = Presistent.Presistent.DatabaseContext.User
+                .Where(u=> u.Account.Contains(account) || u.Username.Contains(account))
+                .OrderByDescending(u=>u.Account)
+                .Take(10+page*10)
+                .ToDictionary(u => u.Account, u => u.Username);
 
-            if (users != null)
-            {
-                return users;
-            }
-            return null;
+            return users;
         }
 
         [JsonRpcMethod("Authentication/ChangeUsername")]

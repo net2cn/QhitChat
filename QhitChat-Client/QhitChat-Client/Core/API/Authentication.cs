@@ -21,9 +21,9 @@ namespace QhitChat_Client.Core.API
             return await Configuration.Network.InvokeAsync<string>("Authentication/GetUsername", account);
         }
 
-        public static async Task<Dictionary<string, string>> FindUserAsync(string account)
+        public static async Task<Dictionary<string, string>> FindUserAsync(string account, int page)
         {
-            return await Configuration.Network.InvokeAsync<Dictionary<string, string>>("Authentication/FindUser", account);
+            return await Configuration.Network.InvokeAsync<Dictionary<string, string>>("Authentication/FindUser", account, page);
         }
 
         public static async Task<bool> ChangeUsernameAsync(string account, string token, string newUsername)
