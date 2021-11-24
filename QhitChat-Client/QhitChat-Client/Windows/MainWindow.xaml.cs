@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -229,6 +230,8 @@ namespace QhitChat_Client.Windows
             CurrentMessageQuene.Add(new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To=SelectedUser.Account, Content = MessageTextBox.Text });
             await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text);
             MessageTextBox.Text = "";
+            ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
+            ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
         }
     }
 
