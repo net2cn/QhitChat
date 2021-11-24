@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>QhitChat_Client</RootNamespace>
     <UseWPF>true</UseWPF>
-    <StartupObject>QhitChat_Client.App</StartupObject>
+    <StartupObject></StartupObject>
     <ApplicationIcon />
     <Win32Resource />
     <Nullable>disable</Nullable>
