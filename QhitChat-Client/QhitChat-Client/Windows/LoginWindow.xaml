@@ -9,7 +9,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:Controls="clr-namespace:QhitChat_Client.Windows.Controls" x:Class="QhitChat_Client.Windows.LoginWindow"
         mc:Ignorable="d"
-        Title="QhitChat" Height="380" Width="620" ResizeMode="NoResize" Loaded="Window_Loaded"
+        Title="QhitChat" Height="380" Width="620" ResizeMode="NoResize"
         Background="{x:Null}" WindowStartupLocation="CenterScreen"
         WindowStyle="None" AllowsTransparency="True" Unloaded="Window_Unloaded">
     <Window.Resources>

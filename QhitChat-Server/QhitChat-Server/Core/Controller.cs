@@ -26,6 +26,7 @@ namespace QhitChat_Server.Core
                 API.Add(member, Activator.CreateInstance(member));
                 remote.AddLocalRpcTarget(API[member]);
             }
+            ((API.Authentication)API[typeof(API.Authentication)]).Remote = Remote;
         }
 
         public string Ping()

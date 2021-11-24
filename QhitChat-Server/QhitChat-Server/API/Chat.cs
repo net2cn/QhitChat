@@ -27,20 +27,10 @@ namespace QhitChat_Server.API
                     var message = (Presistent.Database.Models.Messages)relationship;
                     message.Content = content;
                     message.CreatedOn = System.DateTime.UtcNow;
-                    
-                    if (toUser.Status == 1)
-                    {
-                        // TODO: deliver message to live client.
-                        // message.IsSent = -1; // Indicating that this message is delivered to the peer.
-                        message.IsSent = 0; // Indicating that this message is not delivered to peer yet.
-                    }
-                    else
-                    {
-                        message.IsSent = 0; // Indicating that this message is not delivered to peer yet.
-                    }
+                    message.IsSent = 0; // Indicating that this message is not delivered to peer yet.
 
                     Presistent.Presistent.DatabaseContext.Messages.Add(message);
-                    Presistent.Presistent.DatabaseContext.SaveChangesAsync();
+                    Presistent.Presistent.DatabaseContext.SaveChanges();
                     return true;
                 }
             }
@@ -66,7 +56,7 @@ namespace QhitChat_Server.API
                     {
                         i.IsSent = -1;
                     }
-                    Presistent.Presistent.DatabaseContext.SaveChangesAsync();
+                    Presistent.Presistent.DatabaseContext.SaveChanges();
 
                     return messages;
                 }

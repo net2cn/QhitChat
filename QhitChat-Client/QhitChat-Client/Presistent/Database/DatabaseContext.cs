@@ -10,6 +10,7 @@ namespace QhitChat_Client.Presistent.Database
         public DbSet<User> User { get; set; }
         public DbSet<Relationship> Relationship { get; set; }
         public DbSet<Avatar> Avatar { get; set; }
+        public DbSet<Messages> Messages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

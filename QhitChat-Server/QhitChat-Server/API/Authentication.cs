@@ -7,6 +7,7 @@ namespace QhitChat_Server.API
 {
     class Authentication
     {
+        public JsonRpc Remote;
         public string Account;
         public string Token;
 
@@ -29,7 +30,8 @@ namespace QhitChat_Server.API
                 user.Status = 1;
                 Account = user.Account;
                 Token = token;
-                Presistent.Presistent.DatabaseContext.SaveChangesAsync();
+                Presistent.Presistent.DatabaseContext.SaveChanges();
+                Presistent.Quene.MessageQuene.CreateQuene(account, Remote);
                 Console.Error.WriteLineAsync($"Account {Account} logged in.");
                 return token;
             }
@@ -54,7 +56,7 @@ namespace QhitChat_Server.API
                 // Revoke user token.
                 user.Token = null;
                 user.Status = 0;
-                Presistent.Presistent.DatabaseContext.SaveChangesAsync();
+                Presistent.Presistent.DatabaseContext.SaveChanges();
                 Console.Error.WriteLineAsync($"Account {Account} logged out.");
                 Account = null;
                 Token = null;
@@ -114,7 +116,7 @@ namespace QhitChat_Server.API
                             select u).SingleOrDefault();
 
                 user.Username = newUsername;
-                Presistent.Presistent.DatabaseContext.SaveChangesAsync();
+                Presistent.Presistent.DatabaseContext.SaveChanges();
                 return true;
             }
             return false;

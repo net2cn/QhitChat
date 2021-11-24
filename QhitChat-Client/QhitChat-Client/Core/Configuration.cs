@@ -19,6 +19,7 @@ namespace QhitChat_Client.Core
         public const int PORT = 23340;
         public static readonly X509Certificate CERTIFICATE = new X509Certificate(@"Certificate/server.cer", "");
         public static Network Network = new Network(HOSTNAME, PORT, CERTIFICATE);
+        public static Notification.Notification Notification = new Notification.Notification();
 
         // User Authentication
         public static string Account;

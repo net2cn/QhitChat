@@ -126,6 +126,7 @@ namespace QhitChat_Client.Windows
             {
                 Users.Add(new User(i.Key, i.Value));
                 await Users.Last().GetUserProfileImageAsync();
+                Core.Configuration.Notification.AddQuene(i.Key);
             }
             _contacts = new ObservableCollection<User>(Users);
         }

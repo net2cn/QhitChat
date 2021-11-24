@@ -54,7 +54,11 @@ namespace QhitChat_Server.Presistent.Database
 
             modelBuilder.Entity<Avatar>().HasData(
                 new Avatar { Account = users[0].Account, Path = "./Avatars/d642eccd-5371-4304-af5e-947e476a22a5.png" }
-                );
+            );
+
+            modelBuilder.Entity<Messages>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }

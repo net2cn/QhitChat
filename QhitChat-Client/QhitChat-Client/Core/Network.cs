@@ -195,6 +195,9 @@ namespace QhitChat_Client.Core
                     MessagePackFormatter messageFormatter = new MessagePackFormatter();
                     var messageHandler = new LengthHeaderMessageHandler(sslStream, sslStream, messageFormatter);
                     remote = new JsonRpc(messageHandler);
+                    //remote.AddLocalRpcTarget(Configuration.Notification);
+
+                    Trace.WriteLine("Start listening...");
                     remote.StartListening();
                     await remote.Completion;
                 }
@@ -210,7 +213,6 @@ namespace QhitChat_Client.Core
                     (remote as IDisposable).Dispose();
                     remote = null;
                 }
-                    
             }
         }
 

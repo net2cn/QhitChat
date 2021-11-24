@@ -13,15 +13,11 @@ namespace QhitChat_Client.Windows
     {
         public LoginWindow()
         {
-            DataContext = Core.Configuration.Instance;
-            InitializeComponent();
-        }
-
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
-        {
             // Subscribe to network connection events.
             Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
             Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcConnected;
+
+            InitializeComponent();
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)

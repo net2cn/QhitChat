@@ -5,7 +5,7 @@ using System.Text;
 
 namespace QhitChat_Client.Presistent.Database.Models
 {
-    class Messages : Relationship
+    public class Messages : Relationship
     {
         public string Content { get; set; }
 
