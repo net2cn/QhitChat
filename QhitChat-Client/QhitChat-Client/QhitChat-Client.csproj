@@ -6,7 +6,7 @@
     <RootNamespace>QhitChat_Client</RootNamespace>
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
-    <ApplicationIcon />
+    <ApplicationIcon>message.ico</ApplicationIcon>
     <Win32Resource />
     <Nullable>disable</Nullable>
   </PropertyGroup>
