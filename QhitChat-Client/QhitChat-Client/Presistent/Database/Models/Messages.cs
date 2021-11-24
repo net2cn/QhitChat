@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace QhitChat_Server.Presistent.Database.Models
+namespace QhitChat_Client.Presistent.Database.Models
 {
-    public class Messages : Relationship
+    class Messages : Relationship
     {
         public string Content { get; set; }
 

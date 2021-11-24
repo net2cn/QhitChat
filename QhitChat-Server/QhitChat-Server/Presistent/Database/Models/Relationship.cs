@@ -12,9 +12,12 @@ namespace QhitChat_Server.Presistent.Database.Models
         public string From { get; set; }
 
         [ForeignKey("From")]
-        public User User { get; set; }
+        public User FromUser { get; set; }
 
         [Required]
         public string To { get; set; }
+
+        [ForeignKey("To")]
+        public User ToUser { get; set; }
     }
 }

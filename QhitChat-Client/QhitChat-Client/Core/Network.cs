@@ -141,7 +141,7 @@ namespace QhitChat_Client.Core
             }
             // Compare if remote public certificate the same as local certificate.
             var serverCertificate2 = new X509Certificate2(serverCertificate);
-            return serverCertificate2.Thumbprint == certificate.Thumbprint && serverCertificate2.NotBefore > DateTime.Now && serverCertificate2.NotAfter < DateTime.Now;
+            return serverCertificate2.Thumbprint == certificate.Thumbprint && serverCertificate2.NotBefore < DateTime.Now && serverCertificate2.NotAfter > DateTime.Now;
         }
 
         /// <summary>
