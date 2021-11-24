@@ -25,6 +25,7 @@ namespace QhitChat_Server.Notification
                 if (quene.Count > 0)
                 {
                     var message = quene[0];
+                    //await Remote.InvokeAsync("Notification/Ping", "Hello");
                     await Remote.NotifyAsync("Notification/NewMessage", message);
                     var dbMessage = (from m in Presistent.Presistent.DatabaseContext.Messages
                                     where m.Id == message.Id && m.IsSent!=-1

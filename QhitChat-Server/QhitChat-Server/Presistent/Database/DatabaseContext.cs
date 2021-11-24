@@ -59,6 +59,10 @@ namespace QhitChat_Server.Presistent.Database
             modelBuilder.Entity<Messages>()
                 .Property(e => e.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Messages>().HasData(
+                new Messages { From = users[0].Account, To = users[1].Account, Content = "Hello", CreatedOn = System.DateTime.Now, Id = 1, IsSent = -1 }
+            );
         }
     }
 }

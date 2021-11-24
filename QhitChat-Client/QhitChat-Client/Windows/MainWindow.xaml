@@ -29,6 +29,8 @@
             </Style.Triggers>
         </Style>
         <local:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <local:MessageAlignmentConverter x:Key="MessageAlignmentConverter"/>
+        <local:MessageColorConverter x:Key="MessageColorConverter"/>
     </Window.Resources>
     <Border>
         <Border.Effect>
@@ -209,21 +211,52 @@
                                 </DockPanel.Background>
                                 <Grid>
                                     <Grid Background="White" Height="85" VerticalAlignment="Top">
-                                        <Label Content="{Binding ElementName=ContactsListBox, Path=SelectedItem.Username}" Margin="15,0" FontSize="22" Foreground="Black" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                                        <Label Content="{Binding ElementName=ContactsListBox, Path=SelectedItem.Username}" Margin="15,0,85,0" FontSize="22" Foreground="Black" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                                        <Button x:Name="CloseChatBoxButton" BorderThickness="0" Click="CloseChatBoxButton_Click" HorizontalAlignment="Right" Width="45"
+                                            Style="{DynamicResource Flat}" Margin="0,20,20,20">
+                                            <Viewbox>
+                                                <Canvas Width="24" Height="24">
+                                                    <Path Fill="#FFC7C7C7" Data="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
+                                                </Canvas>
+                                            </Viewbox>
+                                        </Button>
                                     </Grid>
-                                    <ListView Margin="0,90,0,65"></ListView>
+                                    <Grid x:Name="ConstraintGrid" Margin="20,85,20,65"/>
+                                    <ListView x:Name="ChatBoxListBox" Margin="0,85,0,65" ItemsSource="{Binding}"
+                                              ScrollViewer.CanContentScroll="False">
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListViewItem}">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,0,0,0" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
+                                                    <TextBlock Text="{Binding Content}" Background="{Binding From, Converter={StaticResource MessageColorConverter}}" Margin="10" VerticalAlignment="Center" FontSize="25" HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
+                                                               MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}" TextWrapping="Wrap"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
                                     <Grid Background="White" Height="65" VerticalAlignment="Bottom">
                                         <TextBox
                                                     x:Name="MessageTextBox"
                                                     VerticalAlignment="Center"
                                                     Margin="10,0,60,0"
                                                     Width="{Binding Width, RelativeSource={RelativeSource AncestorType=DockPanel}}"
-                                                    materialDesign:HintAssist.Hint="Write a message..."
+                                                    materialDesign:HintAssist.Hint="说点什么吧"
                                                     materialDesign:TextFieldAssist.DecorationVisibility="Collapsed" Cursor="IBeam" FontSize="15" Height="53" VerticalContentAlignment="Center"/>
-                                        <Button
+                                        <Button x:Name="SendMessageButton"
                                                     Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-                                                    ToolTip="MaterialDesignFloatingActionMiniLightButton"
-                                                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" Margin="0,15,10,10" HorizontalAlignment="Right" Width="40">
+                                                    ToolTip="发送"
+                                                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" Margin="0,15,10,10" HorizontalAlignment="Right" Width="40" Click="SendMessageButton_Click">
                                             <materialDesign:PackIcon Kind="Send"/>
                                         </Button>
                                     </Grid>

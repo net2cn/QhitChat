@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using QhitChat_Client.Presistent.Filesystem;
 
@@ -23,10 +24,10 @@ namespace QhitChat_Client.Windows
     public partial class MainWindow : Window
     {
         private ObservableCollection<User> _contacts { get; set; }
-
         public ObservableCollection<User> Users { get; set; }
 
         public User? SelectedUser { get; set; }
+
 
         private string? _searchKeyword;
         public string? SearchKeyword
@@ -47,6 +48,17 @@ namespace QhitChat_Client.Windows
                         Users.Add(i);
                     }
                 }
+            }
+        }
+
+        private ObservableCollection<Presistent.Database.Models.Messages> _currentMessageQuene { get; set; }
+        public ObservableCollection<Presistent.Database.Models.Messages> CurrentMessageQuene
+        {
+            get => _currentMessageQuene;
+            set
+            {
+                _currentMessageQuene = value;
+                ChatBoxListBox.ItemsSource = _currentMessageQuene;
             }
         }
 
@@ -203,7 +215,20 @@ namespace QhitChat_Client.Windows
             if (SelectedUser != null)
             {
                 Trace.WriteLine(SelectedUser.Account);
+                CurrentMessageQuene =  Core.Configuration.Notification.GetQuene(SelectedUser.Account);
             }
+        }
+
+        private void CloseChatBoxButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContactsListBox.SelectedItem = null;
+        }
+
+        private async void SendMessageButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentMessageQuene.Add(new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To=SelectedUser.Account, Content = MessageTextBox.Text });
+            await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text);
+            MessageTextBox.Text = "";
         }
     }
 
@@ -256,6 +281,32 @@ namespace QhitChat_Client.Windows
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value == null ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MessageAlignmentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == Core.Configuration.Account ? HorizontalAlignment.Right: HorizontalAlignment.Left;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MessageColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == Core.Configuration.Account ? new SolidColorBrush(Colors.LightGreen) : new SolidColorBrush(Colors.White);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

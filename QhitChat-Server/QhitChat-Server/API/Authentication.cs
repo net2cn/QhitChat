@@ -57,6 +57,7 @@ namespace QhitChat_Server.API
                 user.Token = null;
                 user.Status = 0;
                 Presistent.Presistent.DatabaseContext.SaveChanges();
+                Presistent.Quene.MessageQuene.DeleteQuene(account);
                 Console.Error.WriteLineAsync($"Account {Account} logged out.");
                 Account = null;
                 Token = null;
