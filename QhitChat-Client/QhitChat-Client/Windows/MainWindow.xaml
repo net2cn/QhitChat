@@ -226,6 +226,11 @@
                                     </Grid>
                                     <Grid Grid.Row="1"
                                         x:Name="ConstraintGrid" Margin="20,0,20,0"/>
+                                    <Rectangle Fill="Beige" Grid.Row="1">
+                                            <Rectangle.OpacityMask>
+                                                <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-16.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
+                                            </Rectangle.OpacityMask>
+                                    </Rectangle>
                                     <ListView Grid.Row="1"
                                         x:Name="ChatBoxListBox"
                                         ItemsSource="{Binding}"
