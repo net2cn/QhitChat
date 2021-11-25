@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QhitChat_Client.Presistent.Database
 {
-    class DatabaseContext:DbContext
+    class DatabaseContext : DbContext
     {
         public DbSet<User> User { get; set; }
         public DbSet<Relationship> Relationship { get; set; }

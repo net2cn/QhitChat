@@ -31,6 +31,7 @@
         <local:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <local:MessageAlignmentConverter x:Key="MessageAlignmentConverter"/>
         <local:MessageColorConverter x:Key="MessageColorConverter"/>
+        <local:ImagePathConverter x:Key="ImagePathConverter"/>
     </Window.Resources>
     <Border>
         <Border.Effect>
@@ -143,8 +144,8 @@
                                         Grid.Column="2"/>
                                             </Grid>
                                             <Separator/>
-                                            <Button
-                                    Content="Hello World"/>
+                                            <Button x:Name="RefreshContactsButton"
+                                    Content="Refresh" Click="RefreshContactsButton_Click"/>
                                             <Separator/>
                                             <Button
                                     Content="Exit"/>
@@ -168,11 +169,7 @@
                                                     </Grid.ColumnDefinitions>
                                                     <Grid x:Name="UserAvatarGrid" Grid.Column="0" Margin="0,0,0,0">
                                                         <materialDesign:PackIcon Grid.Column="0" Kind="AccountCircle" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding Width, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}" Height="{Binding Height, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"/>
-                                                        <Ellipse Grid.Column="0" Margin="7,7,7,7">
-                                                            <Ellipse.Fill>
-                                                                <ImageBrush ImageSource="{Binding Avatar}"/>
-                                                            </Ellipse.Fill>
-                                                        </Ellipse>
+                                                        <Ellipse Grid.Column="0" Margin="7,7,7,7" Fill="{Binding Avatar, Converter={StaticResource ImagePathConverter}}"/>
                                                     </Grid>
                                                     <TextBlock Grid.Column="2" Text="{Binding Username}" Margin="10" VerticalAlignment="Center" FontSize="22" Foreground="White"/>
                                                 </Grid>

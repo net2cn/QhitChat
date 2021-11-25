@@ -63,7 +63,6 @@ namespace QhitChat_Client.Windows
             }
         }
 
-        private string avatarPath = "./cache/avatar.txt";
         private Dictionary<string, string> relationship;
 
         public MainWindow()
@@ -81,8 +80,8 @@ namespace QhitChat_Client.Windows
             Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
 
             TitleBar.Title = Core.Configuration.TITLE;
-            UpdateUserProfileAsync();
-            UpdateContactsAsync();
+            _ = UpdateUserProfileAsync();
+            _ = UpdateContactsAsync();
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -111,21 +110,12 @@ namespace QhitChat_Client.Windows
 
         private async Task UpdateUserProfileAsync()
         {
-            string avatarFilepath = "";
+            // Update username
+            Core.Configuration.Username = await Core.API.Authentication.GetUsernameAsync(Core.Configuration.Account);
+            UpdateUsername(Core.Configuration.Account, Core.Configuration.Username);
 
-            if (!Filesystem.Exists(avatarPath))
-            {
-                avatarFilepath = await GetUserProfileImageAsync(Core.Configuration.Account);
-                Filesystem.WriteLine(avatarPath, avatarFilepath);
-            }
-            else
-            {
-                avatarFilepath = await Filesystem.ReadLineAsync(avatarPath, 1);
-                if (!await Core.API.File.IsAvatarMatchedAsync(Core.Configuration.Account, Path.GetFileName(avatarFilepath)))
-                {
-                    avatarFilepath = await GetUserProfileImageAsync(Core.Configuration.Account);
-                }
-            }
+            // Update avatar
+            var avatarFilepath = await UpdateAvatarAsync(Core.Configuration.Account);
 
             UsernameTextBox.Text = Core.Configuration.Username;
             UserAvatarImageBrush.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
@@ -138,10 +128,53 @@ namespace QhitChat_Client.Windows
             foreach(var i in relationship)
             {
                 Users.Add(new User(i.Key, i.Value));
-                await Users.Last().GetUserProfileImageAsync();
+                await Users.Last().UpdateUserAvatarAsync();
                 Core.Configuration.Notification.AddQuene(i.Key);
             }
             _contacts = new ObservableCollection<User>(Users);
+        }
+
+        private void UpdateUsername(string account, string username)
+        {
+            var user = (from r in Presistent.Presistent.DatabaseContext.User
+                        where r.Account == account
+                        select r).SingleOrDefault();
+
+            if (user == null)
+            {
+                user = new Presistent.Database.Models.User { Account = account, Username = username };
+                Presistent.Presistent.DatabaseContext.User.Add(user);
+                Presistent.Presistent.DatabaseContext.SaveChanges();
+            }
+            else
+            {
+                if (user.Username != username)
+                {
+                    user.Username = username;
+                    Presistent.Presistent.DatabaseContext.SaveChanges();
+                }
+            }
+        }
+
+        private async Task<string> UpdateAvatarAsync(string account)
+        {
+            var avatarFilepath = (from r in Presistent.Presistent.DatabaseContext.Avatar
+                                  where r.Account == Core.Configuration.Account
+                                  select r.Path).SingleOrDefault();
+
+            if (avatarFilepath == null)
+            {
+                avatarFilepath = await GetUserProfileImageAsync(account);
+            }
+            else
+            {
+                if (!await Core.API.File.IsAvatarMatchedAsync(account, Path.GetFileName(avatarFilepath)))
+                {
+                    avatarFilepath = await GetUserProfileImageAsync(account);
+                }
+            }
+
+            return avatarFilepath;
         }
 
         private async Task<string> GetUserProfileImageAsync(string account)
@@ -163,6 +196,12 @@ namespace QhitChat_Client.Windows
                 }
                 Filesystem.CreateEmptyFile(avatarFilepath, avatarData.Length);
                 Filesystem.SaveFileByChunckNumber(avatarFilepath, avatarData, 0);
+
+                var dbAvatar = new Presistent.Database.Models.Avatar();
+                dbAvatar.Account = account;
+                dbAvatar.Path = avatarFilepath;
+                Presistent.Presistent.DatabaseContext.Avatar.Add(dbAvatar);
+                Presistent.Presistent.DatabaseContext.SaveChanges();
                 return avatarFilepath;
             }
             return null;
@@ -175,7 +214,7 @@ namespace QhitChat_Client.Windows
             foreach (var i in userMatched)
             {
                 Users.Add(new User(i.Key, i.Value));
-                await Users.Last().GetUserProfileImageAsync();
+                await Users.Last().UpdateUserAvatarAsync();
             }
         }
 
@@ -227,19 +266,32 @@ namespace QhitChat_Client.Windows
 
         private async void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentMessageQuene.Add(new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To=SelectedUser.Account, Content = MessageTextBox.Text });
-            await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text);
+            var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = MessageTextBox.Text };
+            CurrentMessageQuene.Add(message);
+            await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text); // Send message to server
+            Presistent.Presistent.DatabaseContext.Messages.Add(message);    // Save message to local database.
+            Presistent.Presistent.DatabaseContext.SaveChanges();
             MessageTextBox.Text = "";
             ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
             ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
+        }
+
+        private void RefreshContactsButton_Click(object sender, RoutedEventArgs e)
+        {
+            _ = UpdateContactsAsync();
         }
     }
 
     public class User : INotifyPropertyChanged
     {
+        private string _avatar;
         public string Account { get; set; }
         public string Username { get; set; }
-        public BitmapImage Avatar { get; set; }
+        public string Avatar
+        {
+            get => _avatar;
+            set => SetField(ref _avatar, value);
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -247,11 +299,53 @@ namespace QhitChat_Client.Windows
         {
             Account = account;
             Username = username;
+
+            var user = (from r in Presistent.Presistent.DatabaseContext.User
+                        where r.Account == account
+                        select r).SingleOrDefault();
+
+            if (user == null)
+            {
+                user = new Presistent.Database.Models.User { Account = account, Username = username };
+                Presistent.Presistent.DatabaseContext.User.Add(user);
+                Presistent.Presistent.DatabaseContext.SaveChanges();
+            }
+            else
+            {
+                if (user.Username != username)
+                {
+                    user.Username = username;
+                    Presistent.Presistent.DatabaseContext.SaveChanges();
+                }
+            }
         }
 
-        public async Task GetUserProfileImageAsync()
+        public async Task UpdateUserAvatarAsync()
         {
-            // TODO: Add user avatar cache.
+            var avatarFilepath = (from r in Presistent.Presistent.DatabaseContext.Avatar
+                                  where r.Account == Account
+                                  select r.Path).SingleOrDefault();
+
+            if (avatarFilepath == null)
+            {
+                avatarFilepath = await getUserProfileImageAsync();
+            }
+            else
+            {
+                if (!await Core.API.File.IsAvatarMatchedAsync(Account, Path.GetFileName(avatarFilepath)))
+                {
+                    avatarFilepath = await getUserProfileImageAsync();
+                }
+            }
+
+            if (!String.IsNullOrEmpty(avatarFilepath))
+            {
+                Avatar = avatarFilepath;
+            }
+        }
+
+        private async Task<string> getUserProfileImageAsync()
+        {
             var avatar = await Core.API.File.GetAvatarAsync(Account);
             if (avatar != null)
             {
@@ -269,13 +363,26 @@ namespace QhitChat_Client.Windows
                 }
                 Filesystem.CreateEmptyFile(avatarFilepath, avatarData.Length);
                 Filesystem.SaveFileByChunckNumber(avatarFilepath, avatarData, 0);
-                Avatar = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
+
+                var dbAvatar = new Presistent.Database.Models.Avatar();
+                dbAvatar.Account = Account;
+                dbAvatar.Path = avatarFilepath;
+                Presistent.Presistent.DatabaseContext.Avatar.Add(dbAvatar);
+                Presistent.Presistent.DatabaseContext.SaveChanges();
+                return avatarFilepath;
             }
+            return null;
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
+
+        protected void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

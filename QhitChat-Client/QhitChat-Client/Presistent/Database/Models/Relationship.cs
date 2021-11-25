@@ -10,16 +10,10 @@ namespace QhitChat_Client.Presistent.Database.Models
 {
     public class Relationship
     {
-        [Required]
+        [Key]
         public string From { get; set; }
-
-        [ForeignKey("From")]
-        public User FromUser { get; set; }
 
         [Required]
         public string To { get; set; }
-
-        [ForeignKey("To")]
-        public User ToUser { get; set; }
     }
 }

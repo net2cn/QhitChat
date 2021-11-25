@@ -47,7 +47,6 @@ namespace QhitChat_Client.Windows
                 {
                     // Login success.
                     Core.Configuration.Token = token;
-                    Core.Configuration.Username = await Core.API.Authentication.GetUsernameAsync(Core.Configuration.Account);
                     new MainWindow().Show();
                     Close();
                     return;

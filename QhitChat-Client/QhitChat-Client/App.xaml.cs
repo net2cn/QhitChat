@@ -11,6 +11,7 @@ namespace QhitChat_Client
         {
             base.OnStartup(e);
             _ = Core.Configuration.Instance;    // Initialize global Configuration instance.
+            _ = Presistent.Presistent.Instance;
             Core.Configuration.Network.ConnectAsync(Core.Configuration.HOSTNAME, Core.Configuration.PORT);
         }
     }
