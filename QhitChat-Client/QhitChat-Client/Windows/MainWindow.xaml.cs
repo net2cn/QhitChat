@@ -117,7 +117,7 @@ namespace QhitChat_Client.Windows
             // Update avatar
             var avatarFilepath = await UpdateAvatarAsync(Core.Configuration.Account);
 
-            UsernameTextBox.Text = Core.Configuration.Username;
+            usernameTextBox.Text = Core.Configuration.Username;
             UserAvatarImageBrush.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
         }
 
@@ -218,13 +218,13 @@ namespace QhitChat_Client.Windows
             }
         }
 
-        private async void UsernameTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private async void usernameTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (UsernameTextBox.Text != Core.Configuration.Username)
+            if (usernameTextBox.Text != Core.Configuration.Username)
             {
-                if (UsernameTextBox.Text.Length > 1 && UsernameTextBox.Text.Length < 33)
+                if (usernameTextBox.Text.Length > 1 && usernameTextBox.Text.Length < 33)
                 {
-                    Core.Configuration.Username = UsernameTextBox.Text;
+                    Core.Configuration.Username = usernameTextBox.Text;
                     if(await Core.API.Authentication.ChangeUsernameAsync(Core.Configuration.Account, Core.Configuration.Token, Core.Configuration.Username))
                     {
                         // Successfully changed username

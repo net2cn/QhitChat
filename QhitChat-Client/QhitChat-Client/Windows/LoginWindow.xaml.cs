@@ -11,6 +11,9 @@ namespace QhitChat_Client.Windows
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private static string authenticationPath = "./cache/authenticaton";
+        private static bool savedAuthentication = false;
+
         public LoginWindow()
         {
             // Subscribe to network connection events.
@@ -20,10 +23,39 @@ namespace QhitChat_Client.Windows
             InitializeComponent();
         }
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Core.Configuration.Account = UsernameTextBox.Text;
-            Core.Configuration.Password = PasswordTextBox.Password;
+            if (Presistent.Filesystem.Filesystem.Exists(authenticationPath))
+            {
+                usernameTextBox.Text = await Presistent.Filesystem.Filesystem.ReadLineAsync(authenticationPath, 0);
+                passwordTextBox.Password = await Presistent.Filesystem.Filesystem.ReadLineAsync(authenticationPath, 1);
+                savedAuthentication = true;
+                isSaveCheckBox.IsChecked = true;
+            }
+        }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            // Subscribe to network connection events to prevent leaking.
+            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcDisconnected;
+            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcConnected;
+
+            if (isSaveCheckBox.IsChecked.GetValueOrDefault() == false)
+            {
+                Presistent.Filesystem.Filesystem.DeleteFile(authenticationPath);
+            }
+            else
+            {
+                // Write password to config to save password.
+                Presistent.Filesystem.Filesystem.WriteLine(authenticationPath, Core.Configuration.Account);
+                Presistent.Filesystem.Filesystem.WriteLine(authenticationPath, Core.Configuration.Password);
+            }
+        }
+
+        private async void loginButton_Click(object sender, RoutedEventArgs e)
+        {
+            Core.Configuration.Account = usernameTextBox.Text;
+            Core.Configuration.Password = passwordTextBox.Password;
 
             if (Core.Configuration.Account == "" || Core.Configuration.Password == "")
             {
@@ -39,9 +71,14 @@ namespace QhitChat_Client.Windows
 
             try
             {
-                LoginButton.IsEnabled = false;
-                var salt = await Core.API.Authentication.GetSaltAsync(Core.Configuration.Account);   // Get salt to calculate salted password.
-                var token = await Core.API.Authentication.LoginAsync(Core.Configuration.Account, Core.Utils.SHA512Hash(Core.Configuration.Password + salt));
+                loginButton.IsEnabled = false;
+                if (!savedAuthentication || !isSaveCheckBox.IsChecked.GetValueOrDefault())
+                {
+                    var salt = await Core.API.Authentication.GetSaltAsync(Core.Configuration.Account);   // Get salt to calculate salted password.
+                    Core.Configuration.Password = Core.Utils.SHA512Hash(Core.Configuration.Password + salt);
+                }
+                
+                var token = await Core.API.Authentication.LoginAsync(Core.Configuration.Account, Core.Configuration.Password);
 
                 if (!token.StartsWith(Core.CodeDefinition.ErrorPrefix))
                 {
@@ -64,7 +101,7 @@ namespace QhitChat_Client.Windows
             }
             finally
             {
-                DelayButton(LoginButton, 2000);
+                DelayButton(loginButton, 2000);
             }
         }
 
@@ -85,10 +122,10 @@ namespace QhitChat_Client.Windows
             return await TestConnectionAsync();
         }
 
-        private void PasswordTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void passwordTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
-                LoginButton_Click(sender, e);
+                loginButton_Click(sender, e);
         }
 
         private void DisplayMessage(string message)
@@ -109,13 +146,6 @@ namespace QhitChat_Client.Windows
                 NotificationLabel.Content = "Connected.";
                 NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
             }
-        }
-
-        private void Window_Unloaded(object sender, RoutedEventArgs e)
-        {
-            // Subscribe to network connection events to prevent leaking.
-            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcDisconnected;
-            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcConnected;
         }
     }
 }

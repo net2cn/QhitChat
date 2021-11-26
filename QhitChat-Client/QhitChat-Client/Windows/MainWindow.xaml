@@ -77,7 +77,7 @@
                                                     <RowDefinition Height="60"/>
                                                     <RowDefinition Height="*"/>
                                                 </Grid.RowDefinitions>
-                                                <TextBox x:Name="UsernameTextBox" Foreground="White" Grid.Row="0" FontSize="25" Margin="10,10,10,10" LostFocus="UsernameTextBox_LostFocus" Cursor="IBeam" MaxLines="1" MaxLength="32"/>
+                                                <TextBox x:Name="usernameTextBox" Foreground="White" Grid.Row="0" FontSize="25" Margin="10,10,10,10" LostFocus="usernameTextBox_LostFocus" Cursor="IBeam" MaxLines="1" MaxLength="32"/>
                                                 <Label Grid.Row="1" Margin="6,0" Foreground="Gray" FontSize="15" Content="{Binding Source={x:Static core:Configuration.Account}}" ContentStringFormat="@{0}"/>
                                             </Grid>
                                         </Grid>
@@ -204,7 +204,10 @@
                             </Rectangle>
                             <DockPanel Visibility="{Binding ElementName=ContactsListBox, Path=SelectedItem, Converter={StaticResource NullVisibilityConverter}}" Margin="0,0,0,0">
                                 <DockPanel.Background>
-                                    <SolidColorBrush Color="#FF8778C3"/>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FF65618D" Offset="1"/>
+                                        <GradientStop Color="#FFA8A0EB" Offset="0"/>
+                                    </LinearGradientBrush>
                                 </DockPanel.Background>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -227,9 +230,9 @@
                                     <Grid Grid.Row="1"
                                         x:Name="ConstraintGrid" Margin="20,0,20,0"/>
                                     <Rectangle Fill="Beige" Grid.Row="1">
-                                            <Rectangle.OpacityMask>
-                                                <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-16.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
-                                            </Rectangle.OpacityMask>
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-16.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
+                                        </Rectangle.OpacityMask>
                                     </Rectangle>
                                     <ListView Grid.Row="1"
                                         x:Name="ChatBoxListBox"

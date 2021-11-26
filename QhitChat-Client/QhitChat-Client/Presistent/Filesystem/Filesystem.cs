@@ -18,7 +18,7 @@ namespace QhitChat_Client.Presistent.Filesystem
 
         public static async Task<string> ReadLineAsync(string path, int index)
         {
-            return (await File.ReadAllLinesAsync(path)).Skip(index - 1).Take(1).First();
+            return (await File.ReadAllLinesAsync(path)).Skip(index).Take(1).First();
         }
 
         public static void WriteLine(string path, string content)
@@ -50,6 +50,14 @@ namespace QhitChat_Client.Presistent.Filesystem
                 return true;
             }
             return false;
+        }
+
+        public static void DeleteFile(string authenticationPath)
+        {
+            if (Exists(authenticationPath))
+            {
+                File.Delete(authenticationPath);
+            }
         }
 
         public static void CreateEmptyFile(string path, long fileSize)
