@@ -96,12 +96,13 @@ namespace QhitChat_Server.API
         }
 
         [JsonRpcMethod("Authentication/FindUser")]
-        public Dictionary<string, string> FindUser(string account, int page)
+        public Dictionary<string, string> FindUser(string account, int pageIndex)
         {
             var users = Presistent.Presistent.DatabaseContext.User
                 .Where(u=> u.Account.Contains(account) || u.Username.Contains(account))
                 .OrderByDescending(u=>u.Account)
-                .Take(10+page*10)
+                .Skip(pageIndex*10)
+                .Take(10)
                 .ToDictionary(u => u.Account, u => u.Username);
 
             return users;
