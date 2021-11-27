@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <ControlTemplate x:Key="MinMax" TargetType="ContentControl">
             <Grid>
-                <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
+                <Button x:Name="closeButton" BorderThickness="0" Background="#FF151515" Click="closeButton_Click"
                 d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="30"
                 Style="{DynamicResource Flat}">
                     <Viewbox>
@@ -18,15 +18,15 @@
                         </Canvas>
                     </Viewbox>
                 </Button>
-                <Button x:Name="MaximizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515" Style="{DynamicResource Flat}" Click="MaximizeButton_Click" HorizontalAlignment="Right" Width="30">
+                <Button x:Name="maximizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515" Style="{DynamicResource Flat}" Click="maximizeButton_Click" HorizontalAlignment="Right" Width="30">
                     <Viewbox>
                         <Canvas Width="24" Height="24">
                             <Path Fill="#FFC7C7C7" Data="M4,4H20V20H4V4M6,8V18H18V8H6Z" />
                         </Canvas>
                     </Viewbox>
                 </Button>
-                <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,60,0" Background="#FF151515"
-                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
+                <Button x:Name="minimizeButton" BorderThickness="0" Margin="0,0,60,0" Background="#FF151515"
+                Click="minimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
                     <Viewbox>
                         <Canvas Width="24" Height="24">
                             <Path Fill="#FFC7C7C7" Data="M20,14H4V10H20" />
@@ -37,7 +37,7 @@
         </ControlTemplate>
         <ControlTemplate x:Key="Minimize" TargetType="ContentControl">
             <Grid>
-                <Button x:Name="CloseButton" BorderThickness="0" Background="#FF151515" Click="CloseButton_Click"
+                <Button x:Name="closeButton" BorderThickness="0" Background="#FF151515" Click="closeButton_Click"
                 d:LayoutOverrides="VerticalAlignment" HorizontalAlignment="Right" Width="30"
                 Style="{DynamicResource Flat}">
                     <Viewbox>
@@ -46,8 +46,8 @@
                         </Canvas>
                     </Viewbox>
                 </Button>
-                <Button x:Name="MinimizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515"
-                Click="MinimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
+                <Button x:Name="minimizeButton" BorderThickness="0" Margin="0,0,30,0" Background="#FF151515"
+                Click="minimizeButton_Click" Style="{DynamicResource Flat}" Height="30" HorizontalAlignment="Right" Width="30">
                     <Viewbox>
                         <Canvas Width="24" Height="24">
                             <Path Fill="#FFC7C7C7" Data="M20,14H4V10H20" />

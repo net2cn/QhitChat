@@ -47,7 +47,7 @@ namespace QhitChat_Client.Windows.Controls
             InitializeComponent();
         }
 
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        private void minimizeButton_Click(object sender, RoutedEventArgs e)
         {
             Window window = Window.GetWindow(this);
 
@@ -55,7 +55,7 @@ namespace QhitChat_Client.Windows.Controls
                 window.WindowState = WindowState.Minimized;
         }
 
-        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        private void maximizeButton_Click(object sender, RoutedEventArgs e)
         {
             Window window = Window.GetWindow(this);
 
@@ -69,7 +69,7 @@ namespace QhitChat_Client.Windows.Controls
             }
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void closeButton_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Close();
         }
