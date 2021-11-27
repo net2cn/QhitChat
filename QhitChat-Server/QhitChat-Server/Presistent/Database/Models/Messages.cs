@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -13,9 +14,15 @@ namespace QhitChat_Server.Presistent.Database.Models
         [Required]
         public string From { get; set; }
 
+        [ForeignKey("From")]
+        public User FromUser { get; set; }
+
         [DataMember(Order = 1)]
         [Required]
         public string To { get; set; }
+
+        [ForeignKey("To")]
+        public User ToUser { get; set; }
 
         [DataMember(Order = 2)]
         public string Content { get; set; }
