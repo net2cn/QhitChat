@@ -56,12 +56,11 @@ namespace QhitChat_Server.API
                 {
                     foreach (var i in messages)
                     {
-                        i.IsSent = -1;
+                        i.IsSent = -1;  // Mark messages as sent to prevent messages from being delivered multiple times.
                     }
                     Presistent.Presistent.DatabaseContext.SaveChanges();
-
-                    return messages;
                 }
+                return messages;
             }
 
             return null;

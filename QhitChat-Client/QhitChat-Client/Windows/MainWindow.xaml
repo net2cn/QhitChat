@@ -282,7 +282,7 @@
                                                 materialDesign:TextFieldAssist.DecorationVisibility="Collapsed" Cursor="IBeam"
                                                 FontSize="18" MaxHeight="160" VerticalContentAlignment="Center"
                                                 TextWrapping="WrapWithOverflow" AcceptsReturn="True"
-                                                VerticalScrollBarVisibility="Auto"/>
+                                                VerticalScrollBarVisibility="Auto" KeyDown="MessageTextBox_KeyDown"/>
                                         </Grid>
                                         <Button Grid.Column="1"
                                             x:Name="SendMessageButton"

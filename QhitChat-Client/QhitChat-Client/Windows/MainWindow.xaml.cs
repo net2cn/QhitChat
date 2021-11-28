@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -80,8 +81,9 @@ namespace QhitChat_Client.Windows
             Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
 
             TitleBar.Title = Core.Configuration.TITLE;
-            _ = UpdateUserProfileAsync();
-            _ = UpdateContactsAsync();
+            UpdateUserProfileAsync();
+            await UpdateContactsAsync();
+            await FetchNewMessagesAsync();
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -132,6 +134,15 @@ namespace QhitChat_Client.Windows
                 Core.Configuration.Notification.AddQuene(i.Key);
             }
             _contacts = new ObservableCollection<User>(Users);
+        }
+
+        private async Task FetchNewMessagesAsync()
+        {
+            var messages = await Core.API.Chat.FetchAsync(Core.Configuration.Account, Core.Configuration.Token);
+            foreach (var message in messages)
+            {
+                Core.Configuration.Notification.NewMessage(message);
+            }
         }
 
         private void UpdateUsername(string account, string username)
@@ -279,6 +290,14 @@ namespace QhitChat_Client.Windows
         private void RefreshContactsButton_Click(object sender, RoutedEventArgs e)
         {
             _ = UpdateContactsAsync();
+        }
+
+        private void MessageTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                SendMessageButton_Click(sender, e);
+            }
         }
     }
 

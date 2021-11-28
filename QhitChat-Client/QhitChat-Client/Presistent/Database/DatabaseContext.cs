@@ -21,5 +21,12 @@ namespace QhitChat_Client.Presistent.Database
 
             optionsBuilder.UseSqlite(connection);
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Messages>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+        }
     }
 }

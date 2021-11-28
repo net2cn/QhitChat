@@ -147,5 +147,18 @@ namespace QhitChat_Client.Windows
                 NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC"));
             }
         }
+
+        private void usernameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            savedAuthentication = false;
+            isSaveCheckBox.IsChecked = false;
+            passwordTextBox.Password = "";
+        }
+
+        private void passwordTextBox_TargetUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
+        {
+            savedAuthentication = false;
+            isSaveCheckBox.IsChecked = false;
+        }
     }
 }

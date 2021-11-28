@@ -11,9 +11,9 @@ namespace QhitChat_Client.Core.API
             return await Configuration.Network.InvokeAsync<bool>("Chat/Send", from, token, to, content);
         }
 
-        public static async Task<Presistent.Database.Models.Messages> FetchAsync(string to, string token)
+        public static async Task<List<Presistent.Database.Models.Messages>> FetchAsync(string to, string token)
         {
-            return await Configuration.Network.InvokeAsync<Presistent.Database.Models.Messages>("Chat/Fetch", to, token);
+            return await Configuration.Network.InvokeAsync<List<Presistent.Database.Models.Messages>>("Chat/Fetch", to, token);
         }
     }
 }

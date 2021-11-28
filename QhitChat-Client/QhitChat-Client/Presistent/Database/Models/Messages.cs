@@ -27,7 +27,6 @@ namespace QhitChat_Client.Presistent.Database.Models
         [Required]
         public int IsSent { get; set; } // 0 - message not delivered yet; -1 - message delivered.
 
-        [DataMember(Order = 4)]
         [Key]
         public ulong Id { get; set; }
 

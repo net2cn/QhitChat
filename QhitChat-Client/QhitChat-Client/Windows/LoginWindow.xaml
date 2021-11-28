@@ -59,12 +59,12 @@
                    HorizontalContentAlignment="Center" Foreground="#FFC7C7C7" Height="27" VerticalAlignment="Bottom" />
                             <TextBox x:Name="usernameTextBox" Margin="70,50,0,0"
                      Height="35" VerticalAlignment="Top" Background="#FF5F5F5F" BorderBrush="#FF5F5F5F"
-                     Foreground="#FFC7C7C7" VerticalContentAlignment="Center" FontSize="15" HorizontalAlignment="Left" Width="185" />
+                     Foreground="#FFC7C7C7" VerticalContentAlignment="Center" FontSize="15" HorizontalAlignment="Left" Width="185" TextChanged="usernameTextBox_TextChanged" />
                             <Label x:Name="UsernameLabel" Content="用户名" Margin="10,50,0,0" Foreground="#FFC7C7C7" VerticalAlignment="Top" Height="35" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" HorizontalAlignment="Left" Width="55" />
                             <Label x:Name="PasswordLabel" Content="密码" HorizontalAlignment="Left" Margin="10,95,0,0"
                    Foreground="#FFC7C7C7" Width="55" Height="31" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="15" />
                             <PasswordBox x:Name="passwordTextBox" Margin="70,90,0,0" KeyDown="passwordTextBox_KeyDown"
-                         Background="#FF5F5F5F" BorderBrush="#FF5F5F5F" Foreground="#FFC7C7C7" VerticalContentAlignment="Center" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="185" />
+                         Background="#FF5F5F5F" BorderBrush="#FF5F5F5F" Foreground="#FFC7C7C7" VerticalContentAlignment="Center" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="185" TargetUpdated="passwordTextBox_TargetUpdated" />
                             <CheckBox x:Name="isSaveCheckBox" Content="保存密码" Margin="0,140,105,50"
                       HorizontalAlignment="Right" Foreground="#FFC7C7C7" Background="White" BorderThickness="1" BorderBrush="#FF5F5F5F" HorizontalContentAlignment="Center" />
                         </Grid>
