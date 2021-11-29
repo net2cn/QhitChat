@@ -4,7 +4,7 @@ using System.Text;
 
 namespace QhitChat_Server.Core
 {
-    class Authentication
+    class Utils
     {
         public static string GenerateToken()
         {

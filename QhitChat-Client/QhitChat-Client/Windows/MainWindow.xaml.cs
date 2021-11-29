@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Ookii.Dialogs.Wpf;
 using QhitChat_Client.Presistent.Filesystem;
 
 namespace QhitChat_Client.Windows
@@ -41,7 +43,7 @@ namespace QhitChat_Client.Windows
                 _searchKeyword = value;
                 if (!String.IsNullOrEmpty(value))
                 {
-                    SearchContacts();
+                    searchContacts();
                 }
                 else
                 {
@@ -79,13 +81,13 @@ namespace QhitChat_Client.Windows
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // Subscribe to network connection events.
-            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
+            Core.Configuration.Network.RaiseNetworkEvent += onJsonRpcDisconnected;
             Core.Configuration.Notification.Contacts.CollectionChanged += OnNewContactsAdded;
 
             TitleBar.Title = Core.Configuration.TITLE;
-            UpdateUserProfileAsync();
-            await UpdateContactsAsync();
-            await FetchNewMessagesAsync();
+            updateUserProfileAsync();
+            await updateContactsAsync();
+            await fetchNewMessagesAsync();
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -112,20 +114,20 @@ namespace QhitChat_Client.Windows
 
         }
 
-        private async Task UpdateUserProfileAsync()
+        private async Task updateUserProfileAsync()
         {
             // Update username
             Core.Configuration.Username = await Core.API.Authentication.GetUsernameAsync(Core.Configuration.Account);
-            UpdateUsername(Core.Configuration.Account, Core.Configuration.Username);
+            updateUsername(Core.Configuration.Account, Core.Configuration.Username);
 
             // Update avatar
-            var avatarFilepath = await UpdateAvatarAsync(Core.Configuration.Account);
+            var avatarFilepath = await updateAvatarAsync(Core.Configuration.Account);
 
             usernameTextBox.Text = Core.Configuration.Username;
-            UserAvatarImageBrush.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
+            userAvatarImageBrush.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(avatarFilepath)));
         }
 
-        private async Task UpdateContactsAsync()
+        private async Task updateContactsAsync()
         {
             relationship = await Core.API.Relationship.GetRelationshipAsync(Core.Configuration.Account, Core.Configuration.Token);
 
@@ -138,7 +140,7 @@ namespace QhitChat_Client.Windows
             _contacts = new ObservableCollection<User>(Users);  // Make a copy of contacts.
         }
 
-        private async Task FetchNewMessagesAsync()
+        private async Task fetchNewMessagesAsync()
         {
             var messages = await Core.API.Chat.FetchAsync(Core.Configuration.Account, Core.Configuration.Token);
             foreach (var message in messages)
@@ -147,7 +149,7 @@ namespace QhitChat_Client.Windows
             }
         }
 
-        private void UpdateUsername(string account, string username)
+        private void updateUsername(string account, string username)
         {
             var user = (from r in Presistent.Presistent.DatabaseContext.User
                         where r.Account == account
@@ -169,7 +171,7 @@ namespace QhitChat_Client.Windows
             }
         }
 
-        private async Task<string> UpdateAvatarAsync(string account)
+        private async Task<string> updateAvatarAsync(string account)
         {
             var avatarFilepath = (from r in Presistent.Presistent.DatabaseContext.Avatar
                                   where r.Account == Core.Configuration.Account
@@ -177,20 +179,20 @@ namespace QhitChat_Client.Windows
 
             if (avatarFilepath == null)
             {
-                avatarFilepath = await GetUserProfileImageAsync(account);
+                avatarFilepath = await getUserProfileImageAsync(account);
             }
             else
             {
                 if (!await Core.API.File.IsAvatarMatchedAsync(account, Path.GetFileName(avatarFilepath)))
                 {
-                    avatarFilepath = await GetUserProfileImageAsync(account);
+                    avatarFilepath = await getUserProfileImageAsync(account);
                 }
             }
 
             return avatarFilepath;
         }
 
-        private async Task<string> GetUserProfileImageAsync(string account)
+        private async Task<string> getUserProfileImageAsync(string account)
         {
             var avatar = await Core.API.File.GetAvatarAsync(account);
             if (avatar != null)
@@ -220,7 +222,7 @@ namespace QhitChat_Client.Windows
             return null;
         }
 
-        private async void SearchContacts()
+        private async void searchContacts()
         {
             var userMatched = await Core.API.Authentication.FindUserAsync(SearchKeyword, 0);
             Users.Clear();
@@ -251,7 +253,7 @@ namespace QhitChat_Client.Windows
             }
         }
 
-        private async void OnJsonRpcDisconnected(object sender, Core.NetworkEventArgs e)
+        private async void onJsonRpcDisconnected(object sender, Core.NetworkEventArgs e)
         {
             DisplayMessage("网络连接已断开！应用程序将于5s后自动退出。");
             await Task.Delay(5000);
@@ -287,7 +289,7 @@ namespace QhitChat_Client.Windows
             }
         }
 
-        private void CloseChatBoxButton_Click(object sender, RoutedEventArgs e)
+        private void closeChatBoxButton_Click(object sender, RoutedEventArgs e)
         {
             ContactsListBox.SelectedItem = null;
         }
@@ -306,7 +308,7 @@ namespace QhitChat_Client.Windows
 
         private void RefreshContactsButton_Click(object sender, RoutedEventArgs e)
         {
-            _ = UpdateContactsAsync();
+            _ = updateContactsAsync();
         }
 
         private void MessageTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -314,6 +316,59 @@ namespace QhitChat_Client.Windows
             if (e.Key == Key.Enter && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 SendMessageButton_Click(sender, e);
+            }
+        }
+
+        private async void Ellipse_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            VistaOpenFileDialog dlg = new VistaOpenFileDialog();
+            dlg.Title = "Please select a new avatar.";
+
+            var filter = "";
+            foreach (var ext in "png,jpg,bmp".Split(","))
+            {
+                filter += $"{ext} (*.{ext})|*.{ext}|";
+            }
+            dlg.Filter = filter + "All files (*.*)|*.*";
+
+            if ((bool)dlg.ShowDialog(this))
+            {
+                var uploadAvatarPath = dlg.FileName;
+                var chunckCount = Filesystem.GetChunkCount(uploadAvatarPath);
+                if (chunckCount > 1)
+                {
+                    DisplayMessage("新头像不能超过4MB大小！");
+                    return;
+                }
+                
+                var uploadBytes = Filesystem.GetFileChunckByChunckNumber(uploadAvatarPath, 0);
+                using (System.Drawing.Image image = System.Drawing.Image.FromStream(new MemoryStream(uploadBytes)))
+                {
+                    if (image.Width / image.Height != 1)
+                    {
+                        DisplayMessage("上传的新头像应为正方形！");
+                        return;
+                    }
+                    using (var ms = new MemoryStream())
+                    {
+                        image.Save(ms, ImageFormat.Png);  // Or Png
+                        uploadBytes = ms.ToArray();
+                    }
+                }
+                if (uploadBytes.Length >= Filesystem.ChunckSize)
+                {
+                    DisplayMessage("新头像不能超过4MB大小！");
+                }
+                else
+                {
+                    if (await Core.API.File.UploadNewAvatarAsync(Core.Configuration.Account, Core.Configuration.Token, uploadBytes))
+                    {
+                        DisplayMessage("已成功更改头像！");
+                        await updateUserProfileAsync();
+                        return;
+                    }
+                }
+                DisplayMessage("头像未更改！");
             }
         }
     }
@@ -388,15 +443,7 @@ namespace QhitChat_Client.Windows
                 var avatarFilename = avatar.First().Key;
                 var avatarFilepath = Path.Combine("./cache/avatars/", avatarFilename);
                 var avatarData = avatar.First().Value;
-                BitmapImage img = new BitmapImage();
-                using (MemoryStream memStream = new MemoryStream(avatarData))
-                {
-                    img.BeginInit();
-                    img.CacheOption = BitmapCacheOption.OnLoad;
-                    img.StreamSource = memStream;
-                    img.EndInit();
-                    img.Freeze();
-                }
+
                 Filesystem.CreateEmptyFile(avatarFilepath, avatarData.Length);
                 Filesystem.SaveFileByChunckNumber(avatarFilepath, avatarData, 0);
 

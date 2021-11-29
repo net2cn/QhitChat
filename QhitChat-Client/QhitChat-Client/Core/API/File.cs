@@ -13,5 +13,10 @@ namespace QhitChat_Client.Core.API
         {
             return await Configuration.Network.InvokeAsync<bool>("File/IsAvatarMatched", account, filename);
         }
+
+        public async static Task<bool> UploadNewAvatarAsync(string account, string token, byte[] newAvatar)
+        {
+            return await Configuration.Network.InvokeAsync<bool>("File/UploadNewAvatar", account, token, newAvatar);
+        }
     }
 }

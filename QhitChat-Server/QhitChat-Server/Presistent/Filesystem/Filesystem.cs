@@ -59,6 +59,11 @@ namespace QhitChat_Server.Presistent.Filesystem
             return Path.GetFileName(path);
         }
 
+        public static string GetDirectoryPathFromPath(string path)
+        {
+            return new FileInfo(path).Directory.FullName;
+        }
+
         /// <summary>
         /// Create a empty file to write.
         /// </summary>

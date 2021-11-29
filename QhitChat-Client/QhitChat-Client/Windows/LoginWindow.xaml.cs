@@ -17,8 +17,8 @@ namespace QhitChat_Client.Windows
         public LoginWindow()
         {
             // Subscribe to network connection events.
-            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
-            Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcConnected;
+            Core.Configuration.Network.RaiseNetworkEvent += onJsonRpcDisconnected;
+            Core.Configuration.Network.RaiseNetworkEvent += onJsonRpcConnected;
 
             InitializeComponent();
         }
@@ -37,8 +37,8 @@ namespace QhitChat_Client.Windows
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             // Subscribe to network connection events to prevent leaking.
-            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcDisconnected;
-            Core.Configuration.Network.RaiseNetworkEvent -= OnJsonRpcConnected;
+            Core.Configuration.Network.RaiseNetworkEvent -= onJsonRpcDisconnected;
+            Core.Configuration.Network.RaiseNetworkEvent -= onJsonRpcConnected;
 
             if (isSaveCheckBox.IsChecked.GetValueOrDefault() == false)
             {
@@ -133,13 +133,13 @@ namespace QhitChat_Client.Windows
             MainSnackbar.MessageQueue?.Enqueue(message);
         }
 
-        private void OnJsonRpcDisconnected(object sender, Core.NetworkEventArgs e)
+        private void onJsonRpcDisconnected(object sender, Core.NetworkEventArgs e)
         {
             NotificationLabel.Content = "No Connection.";
             NotificationLabel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFCA5100"));
         }
 
-        private async void OnJsonRpcConnected(object sender, Core.NetworkEventArgs e)
+        private async void onJsonRpcConnected(object sender, Core.NetworkEventArgs e)
         {
             if (await TestConnectionAsync())
             {

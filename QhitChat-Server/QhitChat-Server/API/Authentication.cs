@@ -25,7 +25,7 @@ namespace QhitChat_Server.API
             if (user.Password == password)
             {
                 // Generate token for further session authentication usage.
-                var token = Core.Authentication.GenerateToken();
+                var token = Core.Utils.GenerateToken();
                 user.Token = token;
                 user.Status = 1;
                 Account = user.Account;
