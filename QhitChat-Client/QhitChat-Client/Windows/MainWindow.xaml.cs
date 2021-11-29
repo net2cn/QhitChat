@@ -265,7 +265,7 @@ namespace QhitChat_Client.Windows
                 ObservableCollection<string> addedAccounts = (ObservableCollection<string>)sender;
                 var newUser = new User(addedAccounts.Last(), await Core.API.Authentication.GetUsernameAsync(addedAccounts.Last()));
                 await newUser.UpdateUserAvatarAsync();
-                Users.Add(newUser);
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => Users.Add(newUser)));
             }
         }
 
