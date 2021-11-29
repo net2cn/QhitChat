@@ -322,7 +322,7 @@ namespace QhitChat_Client.Windows
         private async void Ellipse_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             VistaOpenFileDialog dlg = new VistaOpenFileDialog();
-            dlg.Title = "Please select a new avatar.";
+            dlg.Title = "上传新头像";
 
             var filter = "";
             foreach (var ext in "png,jpg,bmp".Split(","))
@@ -334,12 +334,6 @@ namespace QhitChat_Client.Windows
             if ((bool)dlg.ShowDialog(this))
             {
                 var uploadAvatarPath = dlg.FileName;
-                var chunckCount = Filesystem.GetChunkCount(uploadAvatarPath);
-                if (chunckCount > 1)
-                {
-                    DisplayMessage("新头像不能超过4MB大小！");
-                    return;
-                }
                 
                 var uploadBytes = Filesystem.GetFileChunckByChunckNumber(uploadAvatarPath, 0);
                 using (System.Drawing.Image image = System.Drawing.Image.FromStream(new MemoryStream(uploadBytes)))
