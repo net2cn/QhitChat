@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -79,6 +80,7 @@ namespace QhitChat_Client.Windows
         {
             // Subscribe to network connection events.
             Core.Configuration.Network.RaiseNetworkEvent += OnJsonRpcDisconnected;
+            Core.Configuration.Notification.Contacts.CollectionChanged += OnNewContactsAdded;
 
             TitleBar.Title = Core.Configuration.TITLE;
             UpdateUserProfileAsync();
@@ -133,7 +135,7 @@ namespace QhitChat_Client.Windows
                 await Users.Last().UpdateUserAvatarAsync();
                 Core.Configuration.Notification.AddQuene(i.Key);
             }
-            _contacts = new ObservableCollection<User>(Users);
+            _contacts = new ObservableCollection<User>(Users);  // Make a copy of contacts.
         }
 
         private async Task FetchNewMessagesAsync()
@@ -256,6 +258,16 @@ namespace QhitChat_Client.Windows
             Close();
         }
 
+        private async void OnNewContactsAdded(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                string addedAccount = (string)sender;
+                _contacts.Add(new User(addedAccount, await Core.API.Authentication.GetUsernameAsync(addedAccount)));
+                await Users.Last().UpdateUserAvatarAsync();
+            }
+        }
+
         private void DisplayMessage(string message)
         {
             MainSnackbar.MessageQueue?.Enqueue(message);
@@ -266,7 +278,11 @@ namespace QhitChat_Client.Windows
             if (SelectedUser != null)
             {
                 Trace.WriteLine(SelectedUser.Account);
-                CurrentMessageQuene =  Core.Configuration.Notification.GetQuene(SelectedUser.Account);
+                if (!Core.Configuration.Notification.HasQuene(SelectedUser.Account) && !_contacts.Contains(SelectedUser))
+                {
+                    _contacts.Add(SelectedUser);    // Add temp user.
+                }
+                CurrentMessageQuene = Core.Configuration.Notification.GetQuene(SelectedUser.Account);
             }
         }
 

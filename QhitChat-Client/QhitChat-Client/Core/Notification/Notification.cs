@@ -11,18 +11,21 @@ namespace QhitChat_Client.Core.Notification
 {
     public class Notification
     {
+        public ObservableCollection<string> Contacts = new ObservableCollection<string>();
         Dictionary<string, ObservableCollection<Presistent.Database.Models.Messages>> Messages = new Dictionary<string, ObservableCollection<Presistent.Database.Models.Messages>>();
 
         [JsonRpcMethod("Notification/NewMessage")]
         public void NewMessage(Presistent.Database.Models.Messages message)
         {
-            ObservableCollection<Presistent.Database.Models.Messages> quene;
-            if (Messages.TryGetValue(message.From, out quene))
+            if (!HasQuene(message.From))
             {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => quene.Add(message)));
+                Contacts.Add(message.From);
             }
+            ObservableCollection<Presistent.Database.Models.Messages> quene = GetQuene(message.From);
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => quene.Add(message)));
             Presistent.Presistent.DatabaseContext.Messages.Add(message);
             Presistent.Presistent.DatabaseContext.SaveChanges();
+            Contacts.Remove(message.From);
         }
 
         [JsonRpcMethod("Notification/Ping")]
@@ -38,6 +41,15 @@ namespace QhitChat_Client.Core.Notification
             {
                 Messages.Add(account, new ObservableCollection<Presistent.Database.Models.Messages>());
             }
+        }
+
+        public bool HasQuene(string account)
+        {
+            if (Messages.ContainsKey(account))
+            {
+                return true;
+            }
+            return false;
         }
 
         public ObservableCollection<Messages> GetQuene(string account)
