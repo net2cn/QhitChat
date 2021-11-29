@@ -262,9 +262,10 @@ namespace QhitChat_Client.Windows
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                string addedAccount = (string)sender;
-                _contacts.Add(new User(addedAccount, await Core.API.Authentication.GetUsernameAsync(addedAccount)));
-                await Users.Last().UpdateUserAvatarAsync();
+                ObservableCollection<string> addedAccounts = (ObservableCollection<string>)sender;
+                var newUser = new User(addedAccounts.Last(), await Core.API.Authentication.GetUsernameAsync(addedAccounts.Last()));
+                await newUser.UpdateUserAvatarAsync();
+                Users.Add(newUser);
             }
         }
 

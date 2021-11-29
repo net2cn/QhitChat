@@ -15,12 +15,12 @@ namespace QhitChat_Server.API
                         select u).SingleOrDefault();
             if (user != null && user.Token == token)
             {
-                var relationship = (from r in Presistent.Presistent.DatabaseContext.Relationship
-                                   where r.From == fromUser && r.To == to
-                                   select r).SingleOrDefault();
+                //var relationship = (from r in Presistent.Presistent.DatabaseContext.Relationship
+                //                   where r.From == fromUser && r.To == to
+                //                   select r).SingleOrDefault();
 
-                if (relationship != null)
-                {
+                //if (relationship != null)
+                //{
                     var message = new Presistent.Database.Models.Messages();
                     message.From = fromUser;
                     message.To = to;
@@ -29,12 +29,12 @@ namespace QhitChat_Server.API
                     message.IsSent = 0; // Indicating that this message is not delivered to peer yet.
 
                     Presistent.Quene.MessageQuene.Enquene(to, message);
-                    Presistent.Presistent.DatabaseContext.Entry(relationship).State = EntityState.Detached;
+                    //Presistent.Presistent.DatabaseContext.Entry(relationship).State = EntityState.Detached;
                     Presistent.Presistent.DatabaseContext.Entry(message).State = EntityState.Modified;
                     Presistent.Presistent.DatabaseContext.Messages.Add(message);
                     Presistent.Presistent.DatabaseContext.SaveChanges();
                     return true;
-                }
+                //}
             }
 
             return false;
