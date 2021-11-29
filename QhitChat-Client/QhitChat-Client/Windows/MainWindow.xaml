@@ -260,8 +260,10 @@
                                                     HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
                                                     Padding="12"
                                                     UniformCornerRadius="6">
-                                                        <TextBlock Text="{Binding Content}" VerticalAlignment="Center" FontSize="18"
-                                                             TextWrapping="Wrap"/>
+                                                        <TextBox Text="{Binding Content}" VerticalAlignment="Center" FontSize="18"
+                                                             TextWrapping="Wrap" IsReadOnly="True"
+                                                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                                             BorderThickness="0"/>
                                                     </materialDesign:Card>
                                                 </Grid>
                                             </DataTemplate>
