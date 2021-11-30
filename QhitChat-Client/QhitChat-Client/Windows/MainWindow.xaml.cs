@@ -298,14 +298,18 @@ namespace QhitChat_Client.Windows
 
         private async void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = MessageTextBox.Text, CreatedOn=DateTime.Now };
-            CurrentMessageQuene.Add(message);
-            await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text); // Send message to server
-            Presistent.Presistent.DatabaseContext.Messages.Add(message);    // Save message to local database.
-            Presistent.Presistent.DatabaseContext.SaveChanges();
-            MessageTextBox.Text = "";
-            ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
-            ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
+            if (!String.IsNullOrWhiteSpace(MessageTextBox.Text))
+            {
+                var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = MessageTextBox.Text, CreatedOn = DateTime.Now };
+                MessageTextBox.Text = "";
+
+                CurrentMessageQuene.Add(message);
+                ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
+                ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
+                await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text); // Send message to server
+                Presistent.Presistent.DatabaseContext.Messages.Add(message);    // Save message to local database.
+                Presistent.Presistent.DatabaseContext.SaveChanges();
+            }
         }
 
         private void RefreshContactsButton_Click(object sender, RoutedEventArgs e)
