@@ -412,7 +412,9 @@ namespace QhitChat_Client.Windows
 
         private async void openFileButton_Click(object sender, RoutedEventArgs e)
         {
-            Trace.WriteLine(sender);
+            // Disable button to prevent double click.
+            ((Button)sender).IsEnabled = false;
+
             var message = (Presistent.Database.Models.Messages)((Button)sender).DataContext;
             var content = message.Content.Split('\n');
             if (content.Length == 4)
@@ -429,7 +431,7 @@ namespace QhitChat_Client.Windows
                             UseShellExecute = true
                         }
                     }.Start();
-
+                    ((Button)sender).IsEnabled = true;
                     return;
                 }
             }
@@ -474,6 +476,8 @@ namespace QhitChat_Client.Windows
                     break;
                 }
             }
+
+            ((Button)sender).IsEnabled = true;
         }
 
         private void chatBoxImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
