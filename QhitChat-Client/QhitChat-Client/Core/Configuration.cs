@@ -31,6 +31,9 @@ namespace QhitChat_Client.Core
         public static string AvatarDirectory = "./Cache/Avatars/";
         public static string FileDirectory = "./Cache/Files/";
 
+        // File-related
+        public static string ImageExtensions = "png,jpg,bmp,gif";
+
         private static readonly Lazy<Configuration> lazy =
             new Lazy<Configuration>(() => new Configuration());
 

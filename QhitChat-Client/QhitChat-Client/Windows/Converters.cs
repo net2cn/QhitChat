@@ -103,9 +103,7 @@ namespace QhitChat_Client.Windows
 
             var content = value.ToString();
            
-            ImageBrush ib = new ImageBrush();
-            ib.ImageSource = new BitmapImage(new Uri(Path.GetFullPath(content.Replace("$![Image]", ""))));
-            return ib;
+            return new Uri(Path.GetFullPath(content.Replace("&![Image]", "")));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

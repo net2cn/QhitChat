@@ -232,7 +232,9 @@
                                         </Button>
                                     </Grid>
                                     <Grid Grid.Row="1"
-                                        x:Name="ConstraintGrid" Margin="20,0,20,0"/>
+                                        x:Name="PositionConstraintGrid" Margin="20,0,20,0"/>
+                                    <Grid Grid.Row="1"
+                                        x:Name="SizeConstraintGrid" Margin="80,0,80,0"/>
                                     <Rectangle Fill="Beige" Grid.Row="1">
                                         <Rectangle.OpacityMask>
                                             <ImageBrush ImageSource="{Binding Converter={svgc:SvgImageConverter AppName=QhitChat-Client}, ConverterParameter=/Resources/pattern-16.svg}" TileMode="Tile" Viewport="0,0,375,812" ViewportUnits="Absolute"/>
@@ -259,11 +261,11 @@
                                                 <ContentControl Content="{Binding }">
                                                     <ContentControl.Resources>
                                                         <DataTemplate x:Key="TextMessageTemplate">
-                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
+                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=PositionConstraintGrid}">
                                                                 <materialDesign:Card
                                                                     Background="{Binding From, Converter={StaticResource MessageColorConverter}}"
                                                                     Foreground="Black"
-                                                                    MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}"
+                                                                    MaxWidth="{Binding ActualWidth, ElementName=SizeConstraintGrid}"
                                                                     HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
                                                                     Padding="12"
                                                                     UniformCornerRadius="6">
@@ -275,24 +277,24 @@
                                                             </Grid>
                                                         </DataTemplate>
                                                         <DataTemplate x:Key="ImageMessageTemplate">
-                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
+                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=PositionConstraintGrid}">
                                                                 <materialDesign:Card
                                                                     Background="{Binding From, Converter={StaticResource MessageColorConverter}}"
                                                                     Foreground="Black"
-                                                                    MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}"
+                                                                    MaxWidth="{Binding ActualWidth, ElementName=SizeConstraintGrid}"
                                                                     HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
                                                                     Padding="12"
                                                                     UniformCornerRadius="6">
-                                                                    <Image Source="{Binding Content, Converter={StaticResource MessageImageConverter}}" VerticalAlignment="Center"/>
+                                                                    <Image x:Name="chatBoxImage" Source="{Binding Content, Converter={StaticResource MessageImageConverter}}" VerticalAlignment="Center" MouseLeftButtonDown="chatBoxImage_MouseLeftButtonDown"/>
                                                                 </materialDesign:Card>
                                                             </Grid>
                                                         </DataTemplate>
                                                         <DataTemplate x:Key="FileMessageTemplate">
-                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
+                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=PositionConstraintGrid}">
                                                                 <materialDesign:Card
                                                                     Background="{Binding From, Converter={StaticResource MessageColorConverter}}"
                                                                     Foreground="Black"
-                                                                    MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}"
+                                                                    MaxWidth="{Binding ActualWidth, ElementName=SizeConstraintGrid}"
                                                                     HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
                                                                     Padding="12"
                                                                     UniformCornerRadius="6">

@@ -298,7 +298,7 @@ namespace QhitChat_Client.Windows
 
         private async void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = MessageTextBox.Text };
+            var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = MessageTextBox.Text, CreatedOn=DateTime.Now };
             CurrentMessageQuene.Add(message);
             await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text); // Send message to server
             Presistent.Presistent.DatabaseContext.Messages.Add(message);    // Save message to local database.
@@ -383,7 +383,7 @@ namespace QhitChat_Client.Windows
                 if (uuid != null)
                 {
                     var content = $"&![File]{uuid}\n&![Path]{uploadFilePath}\n&![ChunckCount]{chunckCount}\n&![IsDone]{chunckCount}";
-                    var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = content };
+                    var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = content, CreatedOn=DateTime.Now };
                     CurrentMessageQuene.Add(message);
                     ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
                     ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
@@ -395,6 +395,17 @@ namespace QhitChat_Client.Windows
                         Presistent.Presistent.DatabaseContext.SaveChanges();
                     }
                     await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, $"&![File]{uuid}\n&![Path]{originalFilename}"); // Send message to server
+
+
+                    foreach (var ext in Core.Configuration.ImageExtensions.Split(","))
+                    {
+                        if (originalFilename.Substring(originalFilename.Length - 5).Contains(ext))
+                        {
+                            message.Content = $"&![Image]{uploadFilePath}";
+                            Presistent.Presistent.DatabaseContext.SaveChanges();
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -426,8 +437,23 @@ namespace QhitChat_Client.Windows
             // Otherwise download file from server.
             var uuid = content[0].Replace("&![File]", "");
             var originalFilename = content[1].Replace("&![Path]", "");
-            var savePath = Path.Combine(Core.Configuration.FileDirectory, originalFilename);
             var fileSize = await Core.API.File.GetFileSizeAsync(Core.Configuration.Account, Core.Configuration.Token, uuid);
+
+            var savePath = Path.Combine(Core.Configuration.FileDirectory, originalFilename);
+            // Check if file exists.
+            if (Filesystem.Exists(savePath))
+            {
+                int count = 1;
+                string fileExtension = Path.GetExtension(originalFilename);
+                string filename = Path.GetFileNameWithoutExtension(originalFilename);
+                do
+                {
+                    originalFilename = $"{filename}_{count}{fileExtension}";
+                    savePath = Path.Combine(Core.Configuration.FileDirectory, originalFilename);
+                    count++;
+                } while (Filesystem.Exists(savePath));
+            }
+
             Filesystem.CreateEmptyFile(savePath, fileSize);
             var chunckCount = Filesystem.GetChunkCount(savePath);
 
@@ -437,6 +463,38 @@ namespace QhitChat_Client.Windows
                 Filesystem.SaveFileByChunckNumber(savePath, data, chunck);
                 message.Content = $"&![File]{uuid}\n&![Path]{savePath}\n&![ChunckCount]{chunckCount}\n&![IsDone]{chunckCount - chunck - 1}";
                 Presistent.Presistent.DatabaseContext.SaveChanges();
+            }
+
+            foreach (var ext in Core.Configuration.ImageExtensions.Split(","))
+            {
+                if (originalFilename.Substring(originalFilename.Length - 5).Contains(ext))
+                {
+                    message.Content = $"&![Image]{savePath}";
+                    Presistent.Presistent.DatabaseContext.SaveChanges();
+                    break;
+                }
+            }
+        }
+
+        private void chatBoxImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                var filePath = ((BitmapFrame)((System.Windows.Controls.Image)sender).Source).Decoder.ToString();
+
+                var uri = new Uri(Uri.EscapeUriString(filePath));
+                filePath = uri.LocalPath;
+
+                if (Filesystem.Exists(filePath))
+                {
+                    new Process
+                    {
+                        StartInfo = new ProcessStartInfo(filePath)
+                        {
+                            UseShellExecute = true
+                        }
+                    }.Start();
+                }
             }
         }
     }
