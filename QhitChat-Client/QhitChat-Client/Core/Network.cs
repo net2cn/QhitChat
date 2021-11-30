@@ -259,6 +259,17 @@ namespace QhitChat_Client.Core
             // immediately after the null check and before the event is raised.
             EventHandler<NetworkEventArgs> raiseEvent = RaiseNetworkEvent;
 
+            // Spin-off a new task to keep connection alive.
+            new Task(async () =>
+            {
+                while (remote != null)
+                {
+                    await Task.Delay(30000);
+                    Trace.WriteLine("Pinging server...");
+                    Trace.WriteLine(await API.Utils.PingAsync());
+                }
+            }).Start();
+
             // Event will be null if there are no subscribers
             if (raiseEvent != null)
             {
