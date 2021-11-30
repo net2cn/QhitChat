@@ -13,7 +13,12 @@ namespace QhitChat_Client.Presistent.Filesystem
 
         public static int GetChunkCount(string path)
         {
-            return (int)(new FileInfo(path).Length / ChunckSize);
+            return (int)Math.Ceiling(new FileInfo(path).Length / (double)ChunckSize);
+        }
+
+        public static long GetFilesize(string path)
+        {
+            return new FileInfo(path).Length;
         }
 
         public static async Task<string> ReadLineAsync(string path, int index)
@@ -58,6 +63,21 @@ namespace QhitChat_Client.Presistent.Filesystem
             {
                 File.Delete(authenticationPath);
             }
+        }
+
+        /// <summary>
+        /// Return file name with extension from a given path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetFilenameFromPath(string path)
+        {
+            return Path.GetFileName(path);
+        }
+
+        public static string GetDirectoryPathFromPath(string path)
+        {
+            return new FileInfo(path).Directory.FullName;
         }
 
         public static void CreateEmptyFile(string path, long fileSize)

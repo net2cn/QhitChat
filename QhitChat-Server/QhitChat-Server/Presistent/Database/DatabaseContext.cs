@@ -11,6 +11,7 @@ namespace QhitChat_Server.Presistent.Database
         public DbSet<Relationship> Relationship { get; set; }
         public DbSet<Avatar> Avatar { get; set; }
         public DbSet<Messages> Messages { get; set; }
+        public DbSet<File> File { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -53,7 +54,7 @@ namespace QhitChat_Server.Presistent.Database
             );
 
             modelBuilder.Entity<Avatar>().HasData(
-                new Avatar { Account = users[0].Account, Path = "./Avatars/d642eccd-5371-4304-af5e-947e476a22a5.png" }
+                new Avatar { Account = users[0].Account, Path = "d642eccd-5371-4304-af5e-947e476a22a5.png" }
             );
 
             modelBuilder.Entity<Messages>()
@@ -62,6 +63,10 @@ namespace QhitChat_Server.Presistent.Database
 
             modelBuilder.Entity<Messages>().HasData(
                 new Messages { From = users[0].Account, To = users[1].Account, Content = "Hello", CreatedOn = System.DateTime.Now, Id = 1, IsSent = -1 }
+            );
+
+            modelBuilder.Entity<File>().HasData(
+                new File { From = users[0].Account, Uuid= "d642eccd-5371-4304-af5e-947e476a22a5", OriginalName="net2cn.png", IsReceived=-1, CreatedOn = System.DateTime.Now }
             );
         }
     }

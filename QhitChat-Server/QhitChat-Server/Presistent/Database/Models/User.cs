@@ -22,6 +22,7 @@ namespace QhitChat_Server.Presistent.Database.Models
         [Required]
         public int Status { get; set; }       // User status.
 
+        [StringLength(36, MinimumLength = 36)]
         public string Token { get; set; }        // User token for session authentication.
     }
 }

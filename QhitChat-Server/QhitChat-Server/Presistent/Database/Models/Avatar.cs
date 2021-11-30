@@ -8,13 +8,13 @@ namespace QhitChat_Server.Presistent.Database.Models
 {
     public class Avatar
     {
-        [Key]
+        [Key, StringLength(10, MinimumLength = 1)]
         public string Account { get; set; }
 
         [ForeignKey("Account")]
         public User User { get; set; }
 
-        [Required, StringLength(10, MinimumLength = 1)]
+        [Required]
         public string Path { get; set; }
     }
 }

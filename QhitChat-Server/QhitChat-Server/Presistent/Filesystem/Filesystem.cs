@@ -9,9 +9,9 @@ namespace QhitChat_Server.Presistent.Filesystem
     {
         public static int ChunckSize = 4 * 1024 * 1024;
 
-        public static uint GetChunkCount(string path)
+        public static int GetChunkCount(string path)
         {
-            return (uint)(new FileInfo(path).Length / ChunckSize);
+            return (int)Math.Ceiling(new FileInfo(path).Length / (double)ChunckSize);
         }
 
         public static byte[] GetFileChunckByChunckNumber(string path, uint chunckNo)
