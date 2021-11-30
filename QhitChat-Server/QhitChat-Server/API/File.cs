@@ -19,11 +19,14 @@ namespace QhitChat_Server.API
             var filename = (from a in Presistent.Presistent.DatabaseContext.Avatar
                                 where a.Account == account
                                 select a.Path).SingleOrDefault();
-            var filepath = Path.Combine(avatarDirectory, filename);
-            if (Filesystem.Exists(filepath))
+            if (filename != null)
             {
-                // Avatar only allows 1 chunck.
-                return new Dictionary<string, byte[]>() { { Filesystem.GetFilenameFromPath(filepath), Filesystem.GetFileChunckByChunckNumber(filepath, 0) } };
+                var filepath = Path.Combine(avatarDirectory, filename);
+                if (Filesystem.Exists(filepath))
+                {
+                    // Avatar only allows 1 chunck.
+                    return new Dictionary<string, byte[]>() { { Filesystem.GetFilenameFromPath(filepath), Filesystem.GetFileChunckByChunckNumber(filepath, 0) } };
+                }
             }
 
             return null;
@@ -106,7 +109,7 @@ namespace QhitChat_Server.API
         }
 
         [JsonRpcMethod("File/UploadFileByChunck")]
-        public bool UploadFileByChunck(string account, string token, string uuid, uint chunckNo, byte[] data)
+        public bool UploadFileByChunck(string account, string token, string uuid, int chunckNo, byte[] data)
         {
             var user = (from u in Presistent.Presistent.DatabaseContext.User
                         where u.Account == account
@@ -124,12 +127,14 @@ namespace QhitChat_Server.API
 
                 if (fileRecord != null)
                 {
-                    if (fileRecord.IsReceived != -1)
+                    if (fileRecord.IsReceived != 0)
                     {
                         var filepath = Path.Combine("./Files", uuid);
                         if (chunckNo < Filesystem.GetChunkCount(filepath))
                         {
                             Filesystem.SaveFileByChunckNumber(filepath, data, chunckNo);
+                            fileRecord.IsReceived -= 1;
+                            Presistent.Presistent.DatabaseContext.SaveChanges();
                             return true;
                         }
                     }
@@ -160,7 +165,7 @@ namespace QhitChat_Server.API
         }
 
         [JsonRpcMethod("File/GetFileByChunck")]
-        public byte[] GetFileByChunck(string account, string token, string uuid, uint chunckNo)
+        public byte[] GetFileByChunck(string account, string token, string uuid, int chunckNo)
         {
             var user = (from u in Presistent.Presistent.DatabaseContext.User
                         where u.Account == account
@@ -173,10 +178,10 @@ namespace QhitChat_Server.API
 
                 if (fileRecord != null)
                 {
-                    if (fileRecord.IsReceived == -1)
+                    if (fileRecord.IsReceived == 0)
                     {
                         var filepath = Path.Combine("./Files", uuid);
-                        if (chunckNo <= Filesystem.GetChunkCount(filepath))
+                        if (chunckNo < Filesystem.GetChunkCount(filepath))
                         {
                             var data = Filesystem.GetFileChunckByChunckNumber(filepath, chunckNo);
                             return data;

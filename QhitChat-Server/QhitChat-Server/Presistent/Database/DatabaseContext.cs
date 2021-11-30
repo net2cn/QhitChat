@@ -66,7 +66,7 @@ namespace QhitChat_Server.Presistent.Database
             );
 
             modelBuilder.Entity<File>().HasData(
-                new File { From = users[0].Account, Uuid= "d642eccd-5371-4304-af5e-947e476a22a5", OriginalName="net2cn.png", IsReceived=-1, CreatedOn = System.DateTime.Now }
+                new File { From = users[0].Account, Uuid= "d642eccd-5371-4304-af5e-947e476a22a5", OriginalName="net2cn.png", IsReceived=0, CreatedOn = System.DateTime.Now }
             );
         }
     }

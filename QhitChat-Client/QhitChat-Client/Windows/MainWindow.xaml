@@ -32,6 +32,10 @@
         <local:MessageAlignmentConverter x:Key="MessageAlignmentConverter"/>
         <local:MessageColorConverter x:Key="MessageColorConverter"/>
         <local:ImagePathConverter x:Key="ImagePathConverter"/>
+        <local:MessageTypeConverter x:Key="MessageTypeConverter"/>
+        <local:MessageImageConverter x:Key="MessageImageConverter"/>
+        <local:MessageFileProgressConverter x:Key="MessageFileProgressConverter"/>
+        <local:MessageFileInfoConverter x:Key="MessageFileInfoConverter"/>
     </Window.Resources>
     <Border>
         <Border.Effect>
@@ -252,31 +256,109 @@
                                         </ListView.ItemContainerStyle>
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
-                                                    <materialDesign:Card
-                                                    Background="{Binding From, Converter={StaticResource MessageColorConverter}}"
-                                                    Foreground="Black"
-                                                    MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}"
-                                                    HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
-                                                    Padding="12"
-                                                    UniformCornerRadius="6">
-                                                        <TextBox Text="{Binding Content}" VerticalAlignment="Center" FontSize="18"
-                                                             TextWrapping="Wrap" IsReadOnly="True"
-                                                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
-                                                             BorderThickness="0"/>
-                                                    </materialDesign:Card>
-                                                </Grid>
+                                                <ContentControl Content="{Binding }">
+                                                    <ContentControl.Resources>
+                                                        <DataTemplate x:Key="TextMessageTemplate">
+                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
+                                                                <materialDesign:Card
+                                                                    Background="{Binding From, Converter={StaticResource MessageColorConverter}}"
+                                                                    Foreground="Black"
+                                                                    MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}"
+                                                                    HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
+                                                                    Padding="12"
+                                                                    UniformCornerRadius="6">
+                                                                    <TextBox Text="{Binding Content}" VerticalAlignment="Center" FontSize="18"
+                                                                         TextWrapping="Wrap" IsReadOnly="True"
+                                                                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                                                         BorderThickness="0"/>
+                                                                </materialDesign:Card>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                        <DataTemplate x:Key="ImageMessageTemplate">
+                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
+                                                                <materialDesign:Card
+                                                                    Background="{Binding From, Converter={StaticResource MessageColorConverter}}"
+                                                                    Foreground="Black"
+                                                                    MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}"
+                                                                    HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
+                                                                    Padding="12"
+                                                                    UniformCornerRadius="6">
+                                                                    <Image Source="{Binding Content, Converter={StaticResource MessageImageConverter}}" VerticalAlignment="Center"/>
+                                                                </materialDesign:Card>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                        <DataTemplate x:Key="FileMessageTemplate">
+                                                            <Grid Margin="0,10,0,5" Width="{Binding ActualWidth, ElementName=ConstraintGrid}">
+                                                                <materialDesign:Card
+                                                                    Background="{Binding From, Converter={StaticResource MessageColorConverter}}"
+                                                                    Foreground="Black"
+                                                                    MaxWidth="{Binding ActualWidth, ElementName=ConstraintGrid}"
+                                                                    HorizontalAlignment="{Binding From, Converter={StaticResource MessageAlignmentConverter}}"
+                                                                    Padding="12"
+                                                                    UniformCornerRadius="6">
+                                                                    <Grid Margin="5">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="50"/>
+                                                                            <ColumnDefinition/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Button x:Name="openFileButton" Grid.Column="0"
+                                                                            VerticalAlignment="Center" HorizontalAlignment="Center" materialDesign:ButtonProgressAssist.Value="{Binding Content, Converter={StaticResource MessageFileProgressConverter}}" 
+                                                                            materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                                                                            Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Click="OpenFileButton_Click">
+                                                                            <materialDesign:PackIcon Kind="Paperclip"/>
+                                                                        </Button>
+                                                                        <Grid Grid.Column="1">
+                                                                            <Grid.RowDefinitions>
+                                                                                <RowDefinition/>
+                                                                                <RowDefinition/>
+                                                                            </Grid.RowDefinitions>
+                                                                            <TextBox Grid.Row="0" Text="{Binding Content, Converter={StaticResource MessageFileInfoConverter}}" VerticalAlignment="Center" FontSize="18"
+                                                                                 TextWrapping="Wrap" IsReadOnly="True"
+                                                                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                                                                 BorderThickness="0"/>
+                                                                            <Label Grid.Row="1" Content="{Binding Content, StringFormat='\{0\}%', Converter={StaticResource MessageFileProgressConverter}}" Foreground="Gray" FontSize="12"/>
+                                                                        </Grid>
+                                                                    </Grid>
+                                                                </materialDesign:Card>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ContentControl.Resources>
+                                                    <ContentControl.Style>
+                                                        <Style TargetType="{x:Type ContentControl}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Content, Converter={StaticResource MessageTypeConverter}}" Value="Text">
+                                                                    <Setter Property="ContentTemplate" Value="{StaticResource TextMessageTemplate}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Content, Converter={StaticResource MessageTypeConverter}}" Value="Image">
+                                                                    <Setter Property="ContentTemplate" Value="{StaticResource ImageMessageTemplate}" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Content, Converter={StaticResource MessageTypeConverter}}" Value="File">
+                                                                    <Setter Property="ContentTemplate" Value="{StaticResource FileMessageTemplate}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ContentControl.Style>
+                                                </ContentControl>
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
                                     </ListView>
                                     <Grid Grid.Row="2"
                                         Background="White" VerticalAlignment="Bottom">
-                                        <Grid Margin="10,15,10,10">
+                                        <Grid Margin="5,15,10,10">
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
                                                 <ColumnDefinition/>
                                                 <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBox Grid.Column="0"
+                                            <Button Grid.Column="0"
+                                                x:Name="SendFileButton"
+                                                VerticalAlignment="Bottom"
+                                                Style="{StaticResource MaterialDesignIconButton}"
+                                                ToolTip="选择文件"
+                                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" HorizontalAlignment="Left" Width="40" Height="40" Click="SendFileButton_Click">
+                                                <materialDesign:PackIcon Kind="Paperclip"/>
+                                            </Button>
+                                            <TextBox Grid.Column="1"
                                                 x:Name="MessageTextBox"
                                                 VerticalAlignment="Center"
                                                 Width="{Binding Width, RelativeSource={RelativeSource AncestorType=DockPanel}}"
@@ -285,16 +367,15 @@
                                                 FontSize="18" MaxHeight="160" VerticalContentAlignment="Center"
                                                 TextWrapping="WrapWithOverflow" AcceptsReturn="True"
                                                 VerticalScrollBarVisibility="Auto" KeyDown="MessageTextBox_KeyDown"/>
-                                        </Grid>
-                                        <Button Grid.Column="1"
+                                            <Button Grid.Column="2"
                                             x:Name="SendMessageButton"
                                             VerticalAlignment="Bottom"
-                                            Margin="0,15,10,15"
                                             Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
                                             ToolTip="发送"
                                             IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" HorizontalAlignment="Right" Width="40" Click="SendMessageButton_Click">
-                                            <materialDesign:PackIcon Kind="Send"/>
-                                        </Button>
+                                                <materialDesign:PackIcon Kind="Send"/>
+                                            </Button>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </DockPanel>

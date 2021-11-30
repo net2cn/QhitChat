@@ -243,13 +243,15 @@ namespace QhitChat_Client.Windows
                     if(await Core.API.Authentication.ChangeUsernameAsync(Core.Configuration.Account, Core.Configuration.Token, Core.Configuration.Username))
                     {
                         // Successfully changed username
+                        _ = updateUserProfileAsync();
                         DisplayMessage("已更改用户名！");
                         return;
                     }
                 }
 
                 // Unchanged
-                DisplayMessage("用户名未更改，请检查后重试。");
+                _ = updateUserProfileAsync();
+                DisplayMessage("用户名未更改，请检查后重试。用户名长度应大于1并小于33。");
             }
         }
 
@@ -364,6 +366,40 @@ namespace QhitChat_Client.Windows
                 }
                 DisplayMessage("头像未更改！");
             }
+        }
+
+        private async void SendFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            VistaOpenFileDialog dlg = new VistaOpenFileDialog();
+            dlg.Title = "选择文件";
+            dlg.Filter = "All files (*.*)|*.*";
+            if ((bool)dlg.ShowDialog(this))
+            {
+                var uploadFilePath = dlg.FileName;
+                var uuid = await Core.API.File.CreateEmptyFileAsync(Core.Configuration.Account, Core.Configuration.Token, Filesystem.GetFilenameFromPath(uploadFilePath), Filesystem.GetFilesize(uploadFilePath));
+                var fileChunckCount = Filesystem.GetChunkCount(uploadFilePath);
+
+                if (uuid != null)
+                {
+                    var content = $"&![File]{uuid}\n&![Path]{uploadFilePath}\n&![ChunckCount]{fileChunckCount}\n&![IsDone]{fileChunckCount}";
+                    var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = content };
+                    CurrentMessageQuene.Add(message);
+                    ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
+                    ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
+                    Presistent.Presistent.DatabaseContext.Messages.Add(message);    // Save message to local database.
+                    for (int chunck = 0; chunck < fileChunckCount; chunck++)
+                    {
+                        await Core.API.File.UploadFileByChunckAsync(Core.Configuration.Account, Core.Configuration.Token, uuid, chunck, Filesystem.GetFileChunckByChunckNumber(uploadFilePath, chunck));
+                        message.Content = $"&![File]{uuid}\n&![Path]{uploadFilePath}\n&![ChunckCount]{fileChunckCount}\n&![IsDone]{fileChunckCount-chunck-1}";
+                        Presistent.Presistent.DatabaseContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        private void openFileButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 

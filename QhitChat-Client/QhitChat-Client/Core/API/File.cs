@@ -18,5 +18,25 @@ namespace QhitChat_Client.Core.API
         {
             return await Configuration.Network.InvokeAsync<bool>("File/UploadNewAvatar", account, token, newAvatar);
         }
+
+        public async static Task<string> CreateEmptyFileAsync(string account, string token, string originalFilename, long filesize)
+        {
+            return await Configuration.Network.InvokeAsync<string>("File/CreateEmptyFile", account, token, originalFilename, filesize);
+        }
+
+        public async static Task<bool> UploadFileByChunckAsync(string account, string token, string uuid, int chunckNo, byte[] data)
+        {
+            return await Configuration.Network.InvokeAsync<bool>("File/UploadFileByChunck", account, token, uuid, chunckNo, data);
+        }
+
+        public async static Task<string> GetOriginalFilenameAsync(string account, string token, string uuid)
+        {
+            return await Configuration.Network.InvokeAsync<string>("File/GetOriginalFilename", account, token, uuid);
+        }
+
+        public async static Task<byte[]> GetFileByChunckAsync(string account, string token, string uuid, int chunckNo)
+        {
+            return await Configuration.Network.InvokeAsync<byte[]>("File/GetFileByChunck", account, token, uuid, chunckNo);
+        }
     }
 }

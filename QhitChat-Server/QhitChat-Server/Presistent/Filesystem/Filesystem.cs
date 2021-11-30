@@ -14,7 +14,7 @@ namespace QhitChat_Server.Presistent.Filesystem
             return (int)Math.Ceiling(new FileInfo(path).Length / (double)ChunckSize);
         }
 
-        public static byte[] GetFileChunckByChunckNumber(string path, uint chunckNo)
+        public static byte[] GetFileChunckByChunckNumber(string path, int chunckNo)
         {
             if(!Exists(path) || chunckNo > GetChunkCount(path) - 1)
             {
@@ -84,7 +84,7 @@ namespace QhitChat_Server.Presistent.Filesystem
         /// <param name="path"></param>
         /// <param name="chunck"></param>
         /// <param name="chunckNo"></param>
-        public static void SaveFileByChunckNumber(string path, byte[] chunck, uint chunckNo)
+        public static void SaveFileByChunckNumber(string path, byte[] chunck, int chunckNo)
         {
             if (!Exists(path) || chunckNo>GetChunkCount(path)-1)
             {

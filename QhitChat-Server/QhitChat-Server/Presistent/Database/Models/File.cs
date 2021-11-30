@@ -17,7 +17,7 @@ namespace QhitChat_Server.Presistent.Database.Models
         public string OriginalName { get; set; }
 
         [Required]
-        public int IsReceived { get; set; } // -1 - Done.
+        public int IsReceived { get; set; } // 0 - Done.
 
         [Required]
         public DateTime CreatedOn { get; set; }
