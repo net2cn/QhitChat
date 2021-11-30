@@ -130,7 +130,7 @@ namespace QhitChat_Client.Windows
         private async Task updateContactsAsync()
         {
             relationship = await Core.API.Relationship.GetRelationshipAsync(Core.Configuration.Account, Core.Configuration.Token);
-
+            Users.Clear();
             foreach(var i in relationship)
             {
                 Users.Add(new User(i.Key, i.Value));
