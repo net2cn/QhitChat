@@ -34,6 +34,11 @@ namespace QhitChat_Client.Core.API
             return await Configuration.Network.InvokeAsync<string>("File/GetOriginalFilename", account, token, uuid);
         }
 
+        public async static Task<long> GetFileSizeAsync(string account, string token, string uuid)
+        {
+            return await Configuration.Network.InvokeAsync<long>("File/GetFileSize", account, token, uuid);
+        }
+
         public async static Task<byte[]> GetFileByChunckAsync(string account, string token, string uuid, int chunckNo)
         {
             return await Configuration.Network.InvokeAsync<byte[]>("File/GetFileByChunck", account, token, uuid, chunckNo);

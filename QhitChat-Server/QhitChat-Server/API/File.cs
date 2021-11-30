@@ -164,6 +164,28 @@ namespace QhitChat_Server.API
             return null;
         }
 
+        [JsonRpcMethod("File/GetFileSize")]
+        public long GetFileSize(string account, string token, string uuid)
+        {
+            var user = (from u in Presistent.Presistent.DatabaseContext.User
+                        where u.Account == account
+                        select u).SingleOrDefault();
+            if (user != null && user.Token == token)
+            {
+                var fileRecord = (from f in Presistent.Presistent.DatabaseContext.File
+                                  where f.Uuid == uuid
+                                  select f).SingleOrDefault();
+
+                if (fileRecord != null)
+                {
+                    var filepath = Path.Combine("./Files", uuid);
+                    return Filesystem.GetFileSize(filepath);
+                }
+            }
+
+            return 0;
+        }
+
         [JsonRpcMethod("File/GetFileByChunck")]
         public byte[] GetFileByChunck(string account, string token, string uuid, int chunckNo)
         {

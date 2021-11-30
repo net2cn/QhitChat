@@ -304,10 +304,10 @@
                                                                         <Button x:Name="openFileButton" Grid.Column="0"
                                                                             VerticalAlignment="Center" HorizontalAlignment="Center" materialDesign:ButtonProgressAssist.Value="{Binding Content, Converter={StaticResource MessageFileProgressConverter}}" 
                                                                             materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
-                                                                            Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Click="OpenFileButton_Click">
+                                                                            Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Click="openFileButton_Click">
                                                                             <materialDesign:PackIcon Kind="Paperclip"/>
                                                                         </Button>
-                                                                        <Grid Grid.Column="1">
+                                                                        <Grid Grid.Column="1" Margin="10,0,0,0">
                                                                             <Grid.RowDefinitions>
                                                                                 <RowDefinition/>
                                                                                 <RowDefinition/>

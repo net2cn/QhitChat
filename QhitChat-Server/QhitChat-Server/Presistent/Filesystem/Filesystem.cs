@@ -14,6 +14,11 @@ namespace QhitChat_Server.Presistent.Filesystem
             return (int)Math.Ceiling(new FileInfo(path).Length / (double)ChunckSize);
         }
 
+        public static long GetFileSize(string path)
+        {
+            return new FileInfo(path).Length;
+        }
+
         public static byte[] GetFileChunckByChunckNumber(string path, int chunckNo)
         {
             if(!Exists(path) || chunckNo > GetChunkCount(path) - 1)

@@ -121,9 +121,13 @@ namespace QhitChat_Client.Windows
             if (value == null) return 0;
 
             var contents = value.ToString().Split('\n');
-            var chunckCount = System.Convert.ToDouble(contents[2].Replace("&![ChunckCount]", ""));
-            var leftChunck = System.Convert.ToDouble(contents[3].Replace("&![IsDone]", ""));
-            return (chunckCount-leftChunck)/chunckCount * 100;
+            if (contents.Length == 4)
+            {
+                var chunckCount = System.Convert.ToDouble(contents[2].Replace("&![ChunckCount]", ""));
+                var leftChunck = System.Convert.ToDouble(contents[3].Replace("&![IsDone]", ""));
+                return (chunckCount - leftChunck) / chunckCount * 100;
+            }
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -139,8 +143,12 @@ namespace QhitChat_Client.Windows
             if (value == null) return 0;
 
             var contents = value.ToString().Split('\n');
-            var filename = Presistent.Filesystem.Filesystem.GetFilenameFromPath(contents[1].Replace("!&[Path]", ""));
-            return filename;
+            if (contents.Length == 4 || contents.Length == 2)
+            {
+                var filename = Presistent.Filesystem.Filesystem.GetFilenameFromPath(contents[1].Replace("&![Path]", ""));
+                return filename;
+            }
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

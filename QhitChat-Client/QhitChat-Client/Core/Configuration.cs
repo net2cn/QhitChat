@@ -27,6 +27,10 @@ namespace QhitChat_Client.Core
         public static string Username;
         public static string Token;
 
+        // File paths
+        public static string AvatarDirectory = "./Cache/Avatars/";
+        public static string FileDirectory = "./Cache/Files/";
+
         private static readonly Lazy<Configuration> lazy =
             new Lazy<Configuration>(() => new Configuration());
 

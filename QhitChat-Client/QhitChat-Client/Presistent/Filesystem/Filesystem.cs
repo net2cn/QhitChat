@@ -16,7 +16,7 @@ namespace QhitChat_Client.Presistent.Filesystem
             return (int)Math.Ceiling(new FileInfo(path).Length / (double)ChunckSize);
         }
 
-        public static long GetFilesize(string path)
+        public static long GetFileSize(string path)
         {
             return new FileInfo(path).Length;
         }

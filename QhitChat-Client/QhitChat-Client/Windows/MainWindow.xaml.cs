@@ -376,30 +376,68 @@ namespace QhitChat_Client.Windows
             if ((bool)dlg.ShowDialog(this))
             {
                 var uploadFilePath = dlg.FileName;
-                var uuid = await Core.API.File.CreateEmptyFileAsync(Core.Configuration.Account, Core.Configuration.Token, Filesystem.GetFilenameFromPath(uploadFilePath), Filesystem.GetFilesize(uploadFilePath));
-                var fileChunckCount = Filesystem.GetChunkCount(uploadFilePath);
+                var originalFilename = Filesystem.GetFilenameFromPath(uploadFilePath);
+                var uuid = await Core.API.File.CreateEmptyFileAsync(Core.Configuration.Account, Core.Configuration.Token, originalFilename, Filesystem.GetFileSize(uploadFilePath));
+                var chunckCount = Filesystem.GetChunkCount(uploadFilePath);
 
                 if (uuid != null)
                 {
-                    var content = $"&![File]{uuid}\n&![Path]{uploadFilePath}\n&![ChunckCount]{fileChunckCount}\n&![IsDone]{fileChunckCount}";
+                    var content = $"&![File]{uuid}\n&![Path]{uploadFilePath}\n&![ChunckCount]{chunckCount}\n&![IsDone]{chunckCount}";
                     var message = new Presistent.Database.Models.Messages { From = Core.Configuration.Account, To = SelectedUser.Account, Content = content };
                     CurrentMessageQuene.Add(message);
                     ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
                     ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
                     Presistent.Presistent.DatabaseContext.Messages.Add(message);    // Save message to local database.
-                    for (int chunck = 0; chunck < fileChunckCount; chunck++)
+                    for (int chunck = 0; chunck < chunckCount; chunck++)
                     {
                         await Core.API.File.UploadFileByChunckAsync(Core.Configuration.Account, Core.Configuration.Token, uuid, chunck, Filesystem.GetFileChunckByChunckNumber(uploadFilePath, chunck));
-                        message.Content = $"&![File]{uuid}\n&![Path]{uploadFilePath}\n&![ChunckCount]{fileChunckCount}\n&![IsDone]{fileChunckCount-chunck-1}";
+                        message.Content = $"&![File]{uuid}\n&![Path]{uploadFilePath}\n&![ChunckCount]{chunckCount}\n&![IsDone]{chunckCount-chunck-1}";
                         Presistent.Presistent.DatabaseContext.SaveChanges();
                     }
+                    await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, $"&![File]{uuid}\n&![Path]{originalFilename}"); // Send message to server
                 }
             }
         }
 
-        private void openFileButton_Click(object sender, RoutedEventArgs e)
+        private async void openFileButton_Click(object sender, RoutedEventArgs e)
         {
+            Trace.WriteLine(sender);
+            var message = (Presistent.Database.Models.Messages)((Button)sender).DataContext;
+            var content = message.Content.Split('\n');
+            if (content.Length == 4)
+            {
+                // If file exists opens it anyway.
+                var filePath = content[1].Replace("&![Path]", "");
+                var isDone = Convert.ToInt32(content[3].Replace("&![IsDone]", ""));
+                if (Filesystem.Exists(filePath) && isDone == 0)
+                {
+                    new Process
+                    {
+                        StartInfo = new ProcessStartInfo(@Path.GetFullPath(filePath))
+                        {
+                            UseShellExecute = true
+                        }
+                    }.Start();
 
+                    return;
+                }
+            }
+
+            // Otherwise download file from server.
+            var uuid = content[0].Replace("&![File]", "");
+            var originalFilename = content[1].Replace("&![Path]", "");
+            var savePath = Path.Combine(Core.Configuration.FileDirectory, originalFilename);
+            var fileSize = await Core.API.File.GetFileSizeAsync(Core.Configuration.Account, Core.Configuration.Token, uuid);
+            Filesystem.CreateEmptyFile(savePath, fileSize);
+            var chunckCount = Filesystem.GetChunkCount(savePath);
+
+            for (int chunck = 0; chunck < chunckCount; chunck++)
+            {
+                var data = await Core.API.File.GetFileByChunckAsync(Core.Configuration.Account, Core.Configuration.Token, uuid, chunck);
+                Filesystem.SaveFileByChunckNumber(savePath, data, chunck);
+                message.Content = $"&![File]{uuid}\n&![Path]{savePath}\n&![ChunckCount]{chunckCount}\n&![IsDone]{chunckCount - chunck - 1}";
+                Presistent.Presistent.DatabaseContext.SaveChanges();
+            }
         }
     }
 
@@ -471,7 +509,7 @@ namespace QhitChat_Client.Windows
             if (avatar != null)
             {
                 var avatarFilename = avatar.First().Key;
-                var avatarFilepath = Path.Combine("./cache/avatars/", avatarFilename);
+                var avatarFilepath = Path.Combine(Core.Configuration.AvatarDirectory, avatarFilename);
                 var avatarData = avatar.First().Value;
 
                 Filesystem.CreateEmptyFile(avatarFilepath, avatarData.Length);
