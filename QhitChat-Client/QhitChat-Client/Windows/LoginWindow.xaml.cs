@@ -40,11 +40,8 @@ namespace QhitChat_Client.Windows
             Core.Configuration.Network.RaiseNetworkEvent -= onJsonRpcDisconnected;
             Core.Configuration.Network.RaiseNetworkEvent -= onJsonRpcConnected;
 
-            if (isSaveCheckBox.IsChecked.GetValueOrDefault() == false)
-            {
-                Presistent.Filesystem.Filesystem.DeleteFile(authenticationPath);
-            }
-            else
+            Presistent.Filesystem.Filesystem.DeleteFile(authenticationPath);
+            if (isSaveCheckBox.IsChecked.GetValueOrDefault() == true)
             {
                 // Write password to config to save password.
                 Presistent.Filesystem.Filesystem.WriteLine(authenticationPath, Core.Configuration.Account);

@@ -306,7 +306,7 @@ namespace QhitChat_Client.Windows
                 CurrentMessageQuene.Add(message);
                 ChatBoxListBox.SelectedIndex = ChatBoxListBox.Items.Count - 1;
                 ChatBoxListBox.ScrollIntoView(ChatBoxListBox.SelectedItem);
-                await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, MessageTextBox.Text); // Send message to server
+                await Core.API.Chat.SendAsync(Core.Configuration.Account, Core.Configuration.Token, SelectedUser.Account, message.Content); // Send message to server
                 Presistent.Presistent.DatabaseContext.Messages.Add(message);    // Save message to local database.
                 Presistent.Presistent.DatabaseContext.SaveChanges();
             }

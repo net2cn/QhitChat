@@ -11,8 +11,10 @@ Yet another prototype instant messaging application written in C#.
 ### Minimal requirements:
 - Visual Studio 2019
 - .NET Core 3.1 SDK
+
 ### Extended requirements:
-- Python 3.7 with Jpyuter.
+- ~~Python 3.7 with Jopyuter.~~ (Deprecated)
+- libgdiplus if server running on Linux. (Otherwise change avatar feature is not working properly)
 
 ## Screenshots
 ![LoginWindow](images/screenshot_2021-11-15_164404.png)

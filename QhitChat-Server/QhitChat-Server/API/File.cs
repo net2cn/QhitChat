@@ -129,7 +129,7 @@ namespace QhitChat_Server.API
                 {
                     if (fileRecord.IsReceived != 0)
                     {
-                        var filepath = Path.Combine("./Files", uuid);
+                        var filepath = Path.Combine(fileDirectory, uuid);
                         if (chunckNo < Filesystem.GetChunkCount(filepath))
                         {
                             Filesystem.SaveFileByChunckNumber(filepath, data, chunckNo);
@@ -178,7 +178,7 @@ namespace QhitChat_Server.API
 
                 if (fileRecord != null)
                 {
-                    var filepath = Path.Combine("./Files", uuid);
+                    var filepath = Path.Combine(fileDirectory, uuid);
                     return Filesystem.GetFileSize(filepath);
                 }
             }
@@ -202,7 +202,7 @@ namespace QhitChat_Server.API
                 {
                     if (fileRecord.IsReceived == 0)
                     {
-                        var filepath = Path.Combine("./Files", uuid);
+                        var filepath = Path.Combine(fileDirectory, uuid);
                         if (chunckNo < Filesystem.GetChunkCount(filepath))
                         {
                             var data = Filesystem.GetFileChunckByChunckNumber(filepath, chunckNo);
